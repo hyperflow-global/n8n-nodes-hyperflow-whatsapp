@@ -1,0 +1,96 @@
+# Dependências
+node_modules/
+jspm_packages/
+layer/node_modules/
+
+# Build e compilação
+.serverless/
+.webpack/
+.esbuild/
+lib/
+dist/
+build/
+*.tsbuildinfo
+
+# Arquivos de log
+*.log
+yarn-error.log
+npm-debug.log
+lerna-debug.log
+
+# Arquivos temporários e cache
+.tmp/
+tmp/
+*.tmp
+.cache/
+.parcel-cache/
+.npm/
+.yarn/
+
+# Arquivos de ambiente
+.env
+.env.local
+.env.*.local
+*.env
+
+# Arquivos de teste gerados
+coverage/
+.nyc_output/
+*.lcov
+.jest/
+
+# Arquivos de lock (já estão versionados, não precisam ser indexados)
+yarn.lock
+package-lock.json
+
+# Arquivos de configuração de build
+webpack.config.js
+.eslintcache
+.stylelintcache
+
+# Arquivos grandes e binários
+*.jar
+*.zip
+*.tar.gz
+*.tgz
+*.rar
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Arquivos de documentação gerados (exceto README principal)
+docs/
+*.md
+!README.md
+
+# Arquivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Arquivos de warmup
+_warmup/
+
+# Arquivos de configuração específicos do Serverless
+.serverless_plugins/
+
+# Arquivos de snapshot de testes (podem ser muito grandes)
+**/__snapshots__/
+
+# Arquivos de mock grandes ou gerados
+__mocks__/**/*.js
+__mocks__/**/*.map
+
+# Arquivos de recursos offline
+offline/*.jar
+
+# Arquivos de entrada gerados
+entries.json
+
+# Arquivos de configuração de build
+buildspec-task.yml
+build/config.gypi
