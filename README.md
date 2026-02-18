@@ -50,7 +50,7 @@ npm link n8n-nodes-hyperflow-whatsapp
 
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `HYPERFLOW_API_URL` | `https://api.hyperflowapis.global` | Base URL for the Hyperflow API |
+| `HYPERFLOW_API_URL` | `https://messaging.hyperflowapis.global` | Base URL for the Hyperflow API |
 
 To override the default API URL, set the environment variable before starting n8n:
 
@@ -222,10 +222,10 @@ Send WhatsApp messages through Hyperflow API. Supports multiple message types:
 This node integrates with the Hyperflow WhatsApp API. All requests are made to:
 
 ```
-POST https://api.hyperflowapis.global/whatsapp/send-message
+POST https://messaging.hyperflowapis.global/whatsapp/send-message
 ```
 
-With authentication via `client-id` header.
+With authentication via `api-key` header.
 
 ## Support
 

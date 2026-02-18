@@ -1,4 +1,3 @@
-// Mock for node-localstorage
 export class LocalStorage {
     private store: Map<string, string> = new Map()
 

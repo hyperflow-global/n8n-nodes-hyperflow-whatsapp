@@ -10,20 +10,20 @@
     "whatsapp-business"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/hyperflow/n8n-nodes-hyperflow-whatsapp",
+  "homepage": "https://github.com/hyperflow-global/n8n-nodes-hyperflow",
   "author": {
     "name": "Hyperflow",
     "email": "contato@hyperflow.global"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hyperflow/n8n-nodes-hyperflow-whatsapp.git"
+    "url": "https://github.com/hyperflow/n8n-nodes-hyperflow.git"
   },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc && gulp build:icons",
-    "dev": "tsc --watch",
+    "build": "tsc && gulp build:icons && gulp build:nodeJson",
+    "dev": "npm run build && N8N_CUSTOM_EXTENSIONS=$(pwd) npx n8n",
     "dev-n8n": "n8n-node dev",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint src --ext .ts",

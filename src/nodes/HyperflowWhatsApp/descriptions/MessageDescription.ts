@@ -1,12 +1,5 @@
-/**
- * Message-related field descriptions for Hyperflow WhatsApp node
- */
-
 import type { INodeProperties } from 'n8n-workflow'
 
-/**
- * Message type selector for Send operation
- */
 export const messageTypeField: INodeProperties = {
 	displayName: 'Tipo de Mensagem',
 	name: 'messageType',
@@ -35,8 +28,6 @@ export const messageTypeField: INodeProperties = {
 	],
 	default: 'text',
 }
-
-// ==================== TEXT MESSAGE FIELDS ====================
 
 export const textMessageFields: INodeProperties[] = [
 	{
@@ -190,8 +181,6 @@ export const textMessageFields: INodeProperties[] = [
 	},
 ]
 
-// ==================== MEDIA MESSAGE FIELDS ====================
-
 export const mediaMessageFields: INodeProperties[] = [
 	{
 		displayName: 'URL da Mídia',
@@ -237,8 +226,6 @@ export const mediaMessageFields: INodeProperties[] = [
 		description: 'Nome do arquivo (ex: documento.pdf)',
 	},
 ]
-
-// ==================== LOCATION FIELDS ====================
 
 export const locationFields: INodeProperties[] = [
 	{
@@ -301,8 +288,6 @@ export const locationFields: INodeProperties[] = [
 	},
 ]
 
-// ==================== CONTACT FIELDS ====================
-
 export const contactFields: INodeProperties[] = [
 	{
 		displayName: 'Nome do Contato',
@@ -364,8 +349,6 @@ export const contactFields: INodeProperties[] = [
 	},
 ]
 
-// ==================== LIST FIELDS ====================
-
 export const listFields: INodeProperties[] = [
 	{
 		displayName: 'Texto do Corpo da Lista',
@@ -413,8 +396,6 @@ export const listFields: INodeProperties[] = [
 		description: 'Seções de lista em formato JSON',
 	},
 ]
-
-// ==================== FLOWS FIELDS ====================
 
 export const flowsFields: INodeProperties[] = [
 	{
@@ -537,8 +518,6 @@ export const flowsFields: INodeProperties[] = [
 	},
 ]
 
-// ==================== GENERIC CARD FIELDS ====================
-
 export const genericCardFields: INodeProperties[] = [
 	{
 		displayName: 'Título do Cartão',
@@ -583,8 +562,6 @@ export const genericCardFields: INodeProperties[] = [
 		description: 'URL da imagem para o cartão',
 	},
 ]
-
-// ==================== PRODUCT FIELDS ====================
 
 export const productFields: INodeProperties[] = [
 	{
@@ -633,8 +610,6 @@ export const productFields: INodeProperties[] = [
 	},
 ]
 
-// ==================== PRODUCT LIST FIELDS ====================
-
 export const productListFields: INodeProperties[] = [
 	{
 		displayName: 'Texto da Lista de Produtos',
@@ -680,8 +655,6 @@ export const productListFields: INodeProperties[] = [
 		description: 'Seções de produtos em formato JSON',
 	},
 ]
-
-// ==================== TEMPLATE FIELDS ====================
 
 export const templateFields: INodeProperties[] = [
 	{

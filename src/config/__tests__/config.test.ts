@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 describe('Config', () => {
     const originalEnv = process.env
 
@@ -14,7 +15,7 @@ describe('Config', () => {
         it('should use default URL when env var is not set', () => {
             delete process.env.HYPERFLOW_API_URL
             const { config } = require('../index')
-            expect(config.apiUrl).toBe('https://api.hyperflowapis.global')
+            expect(config.apiUrl).toBe('https://messaging.hyperflowapis.global')
         })
 
         it('should use env var when set', () => {
@@ -26,8 +27,7 @@ describe('Config', () => {
         it('should use empty string env var (edge case)', () => {
             process.env.HYPERFLOW_API_URL = ''
             const { config } = require('../index')
-            // Empty string is falsy, so it should use default
-            expect(config.apiUrl).toBe('https://api.hyperflowapis.global')
+            expect(config.apiUrl).toBe('https://messaging.hyperflowapis.global')
         })
     })
 
@@ -39,7 +39,7 @@ describe('Config', () => {
 
         it('should have health endpoint', () => {
             const { config } = require('../index')
-            expect(config.endpoints.health).toBe('/health')
+            expect(config.endpoints.health).toBe('/whatsapp/templates')
         })
 
         it('should be immutable (as const)', () => {
@@ -62,14 +62,14 @@ describe('Config', () => {
             delete process.env.HYPERFLOW_API_URL
             const { config } = require('../index')
             const fullUrl = `${config.apiUrl}${config.endpoints.sendMessage}`
-            expect(fullUrl).toBe('https://api.hyperflowapis.global/whatsapp/send-message')
+            expect(fullUrl).toBe('https://messaging.hyperflowapis.global/whatsapp/send-message')
         })
 
         it('should build full health URL correctly', () => {
             delete process.env.HYPERFLOW_API_URL
             const { config } = require('../index')
             const fullUrl = `${config.apiUrl}${config.endpoints.health}`
-            expect(fullUrl).toBe('https://api.hyperflowapis.global/health')
+            expect(fullUrl).toBe('https://messaging.hyperflowapis.global/whatsapp/templates')
         })
     })
 })

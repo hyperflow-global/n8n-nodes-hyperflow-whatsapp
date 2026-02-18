@@ -1,7 +1,3 @@
-/**
- * Send template message operation for Hyperflow WhatsApp node
- */
-
 import type { IDataObject, IExecuteFunctions, INodeExecutionData } from 'n8n-workflow'
 import { NodeOperationError } from 'n8n-workflow'
 import { config } from '../../../../config'
@@ -12,9 +8,24 @@ import {
 	sanitizePhoneNumber,
 } from '../../GenericFunctions'
 
-/**
- * Execute the send template message operation
- */
+interface HttpError extends Error {
+	response?: { status?: number; data?: unknown }
+	statusCode?: number
+}
+
+function toEnrichedErrorMessage(error: unknown): string {
+	const base = error instanceof Error ? error.message : String(error)
+	const err = error as HttpError
+	if (err.response?.status !== undefined) {
+		const body = err.response.data
+		const bodyStr =
+			body != null ? (typeof body === 'string' ? body : JSON.stringify(body)) : ''
+		return `[${err.response.status}] ${base}${bodyStr ? ` — ${bodyStr}` : ''}`
+	}
+	if (err.statusCode !== undefined) return `[${err.statusCode}] ${base}`
+	return base
+}
+
 export async function execute(
 	this: IExecuteFunctions,
 	items: INodeExecutionData[],
@@ -43,7 +54,6 @@ export async function execute(
 				parameters: safeJsonParse(parametersJson, []),
 			}
 
-			// Add optional header parameters
 			const headerParameter = this.getNodeParameter('headerParameter', i, '') as string
 			if (headerParameter) payload.headerParameter = headerParameter
 
@@ -56,36 +66,28 @@ export async function execute(
 			const headerDocumentUrl = this.getNodeParameter('headerDocumentUrl', i, '') as string
 			if (headerDocumentUrl) payload.documentUrl = headerDocumentUrl
 
-			// Add buttons if configured
 			const buttons = safeJsonParse<IDataObject[]>(buttonsJson, [])
 			if (buttons.length > 0) payload.buttons = buttons
 
-			// Build request body
-			const requestBody = {
+			const requestBody: IDataObject = {
 				to,
 				type: 'template',
 				payload,
 			}
 
-			// Make API request
 			const response = await hyperflowApiRequest.call(
 				this,
 				'POST',
 				config.endpoints.sendMessage,
-				requestBody as IDataObject,
+				requestBody,
 			)
 
-			returnData.push({
-				json: response,
-				pairedItem: { item: i },
-			})
+			returnData.push({ json: response, pairedItem: { item: i } })
 		} catch (error) {
-			const errorMessage = error instanceof Error ? error.message : String(error)
+			const errorMessage = toEnrichedErrorMessage(error)
 			if (this.continueOnFail()) {
 				returnData.push({
-					json: {
-						error: errorMessage,
-					},
+					json: { error: errorMessage },
 					pairedItem: { item: i },
 				})
 				continue

@@ -1,12 +1,5 @@
-/**
- * Shared field definitions used across multiple operations
- */
-
 import type { INodeProperties } from 'n8n-workflow'
 
-/**
- * Phone number field - used in all message operations
- */
 export const phoneNumberField: INodeProperties = {
 	displayName: 'Recipient Phone Number',
 	name: 'to',
@@ -17,9 +10,6 @@ export const phoneNumberField: INodeProperties = {
 	description: 'Phone number with country code (e.g., 5511999999999)',
 }
 
-/**
- * Footer field - used in text, list, and generic messages
- */
 export const footerField: INodeProperties = {
 	displayName: 'Footer',
 	name: 'footer',
@@ -28,9 +18,6 @@ export const footerField: INodeProperties = {
 	description: 'Optional footer text',
 }
 
-/**
- * Include buttons toggle
- */
 export const includeButtonsField: INodeProperties = {
 	displayName: 'Include Buttons',
 	name: 'includeButtons',
@@ -39,9 +26,6 @@ export const includeButtonsField: INodeProperties = {
 	description: 'Whether to include interactive buttons',
 }
 
-/**
- * Buttons collection field
- */
 export const buttonsField: INodeProperties = {
 	displayName: 'Buttons',
 	name: 'buttons',

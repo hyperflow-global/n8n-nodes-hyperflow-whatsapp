@@ -192,7 +192,7 @@ describe('HyperflowWhatsAppTrigger Node', () => {
 
             expect(result.webhookResponse).toEqual({
                 status: 'ok',
-                message: 'Event type not subscribed',
+                message: 'Tipo de evento não inscrito',
             })
             expect(result.workflowData).toBeUndefined()
         })
@@ -213,7 +213,7 @@ describe('HyperflowWhatsAppTrigger Node', () => {
 
             expect(result.webhookResponse).toEqual({
                 status: 'ok',
-                message: 'Number not in filter list',
+                message: 'Número não está na lista de filtros',
             })
             expect(result.workflowData).toBeUndefined()
         })
@@ -350,7 +350,7 @@ describe('HyperflowWhatsAppTrigger Node', () => {
                 .mockReturnValueOnce(['message'])
                 .mockReturnValueOnce({})
 
-            // Capture the actual data passed to returnJsonArray
+
             let capturedData: any
             mockReturnJsonArray.mockImplementation((data) => {
                 capturedData = data

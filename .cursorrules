@@ -165,7 +165,7 @@ const mockExecuteFunctions = {
 ## Environment Variables
 
 ### Supported Variables
-- `HYPERFLOW_API_URL` - Override base API URL (default: `https://api.hyperflowapis.global`)
+- `HYPERFLOW_API_URL` - Override base API URL (default: `https://messaging.hyperflowapis.global`)
 - Access via `process.env.HYPERFLOW_API_URL` in config
 
 ---

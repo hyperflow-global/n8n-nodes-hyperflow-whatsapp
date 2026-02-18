@@ -1,7 +1,3 @@
-/**
- * Send message operation for Hyperflow WhatsApp node
- */
-
 import type { IExecuteFunctions, INodeExecutionData, IDataObject } from 'n8n-workflow'
 import { NodeOperationError } from 'n8n-workflow'
 import {
@@ -13,9 +9,24 @@ import {
 } from '../../GenericFunctions'
 import { config } from '../../../../config'
 
-/**
- * Execute the send message operation
- */
+interface HttpError extends Error {
+	response?: { status?: number; data?: unknown }
+	statusCode?: number
+}
+
+function toEnrichedErrorMessage(error: unknown): string {
+	const base = error instanceof Error ? error.message : String(error)
+	const err = error as HttpError
+	if (err.response?.status !== undefined) {
+		const body = err.response.data
+		const bodyStr =
+			body != null ? (typeof body === 'string' ? body : JSON.stringify(body)) : ''
+		return `[${err.response.status}] ${base}${bodyStr ? ` — ${bodyStr}` : ''}`
+	}
+	if (err.statusCode !== undefined) return `[${err.statusCode}] ${base}`
+	return base
+}
+
 export async function execute(
 	this: IExecuteFunctions,
 	items: INodeExecutionData[],
@@ -36,180 +47,27 @@ export async function execute(
 				)
 			}
 
-			let payload: IDataObject = {}
+			const payload = buildPayloadForMessageType.call(this, messageType, i)
 
-			// Build payload based on message type
-			switch (messageType) {
-				case 'text': {
-					const text = this.getNodeParameter('text', i) as string
-					const footer = this.getNodeParameter('footer', i, '') as string
-					const includeButtons = this.getNodeParameter('includeButtons', i, false) as boolean
-
-					payload = { text }
-					if (footer) payload.footer = footer
-
-					if (includeButtons) {
-						const buttonsData = this.getNodeParameter('buttons', i, {}) as IDataObject
-						const buttonValues = (buttonsData.buttonValues as IDataObject[]) || []
-
-						if (buttonValues.length > 0) {
-							payload.buttons = buttonValues.map(buildButton)
-						}
-					}
-					break
-				}
-
-				case 'image':
-				case 'video':
-				case 'audio':
-				case 'sticker': {
-					const mediaUrl = this.getNodeParameter('mediaUrl', i) as string
-					payload = { url: mediaUrl }
-
-					if (messageType !== 'audio' && messageType !== 'sticker') {
-						const caption = this.getNodeParameter('caption', i, '') as string
-						if (caption) payload.text = caption
-					}
-					break
-				}
-
-				case 'file': {
-					const mediaUrl = this.getNodeParameter('mediaUrl', i) as string
-					const caption = this.getNodeParameter('caption', i, '') as string
-					const fileName = this.getNodeParameter('fileName', i, '') as string
-
-					payload = { url: mediaUrl }
-					if (caption) payload.text = caption
-					if (fileName) payload.name = fileName
-					break
-				}
-
-				case 'location': {
-					payload = {
-						latitude: this.getNodeParameter('latitude', i) as string,
-						longitude: this.getNodeParameter('longitude', i) as string,
-						name: this.getNodeParameter('locationName', i, '') as string,
-						address: this.getNodeParameter('address', i, '') as string,
-					}
-					break
-				}
-
-				case 'contact': {
-					payload = {
-						name: this.getNodeParameter('contactName', i) as string,
-						phone: this.getNodeParameter('contactPhone', i) as string,
-						email: this.getNodeParameter('contactEmail', i, '') as string,
-						country: this.getNodeParameter('countryCode', i, '55') as string,
-					}
-					break
-				}
-
-				case 'list': {
-					const sectionsJson = this.getNodeParameter('sections', i) as string
-					payload = {
-						text: this.getNodeParameter('listText', i) as string,
-						button: this.getNodeParameter('listButton', i) as string,
-						sections: safeJsonParse(sectionsJson, []),
-					}
-
-					const footer = this.getNodeParameter('footer', i, '') as string
-					if (footer) payload.footer = footer
-					break
-				}
-
-				case 'flows': {
-					const flowDataJson = this.getNodeParameter('flowData', i, '{}') as string
-					const useFlowName = this.getNodeParameter('useFlowName', i, false) as boolean
-					const flowIdentifier = this.getNodeParameter('flowIdentifier', i) as string
-
-					payload = {
-						text: this.getNodeParameter('flowText', i) as string,
-						cta: this.getNodeParameter('flowCta', i) as string,
-						flowAction: this.getNodeParameter('flowAction', i) as string,
-						screen: this.getNodeParameter('flowScreen', i, '') as string,
-						data: safeJsonParse(flowDataJson, {}),
-						draft: this.getNodeParameter('flowDraft', i, false) as boolean,
-					}
-
-					if (useFlowName) {
-						payload.flowName = flowIdentifier
-					} else {
-						payload.flowId = flowIdentifier
-					}
-					break
-				}
-
-				case 'generic': {
-					payload = {
-						title: this.getNodeParameter('genericTitle', i, '') as string,
-						subtitle: this.getNodeParameter('genericSubtitle', i, '') as string,
-					}
-
-					const image = this.getNodeParameter('genericImage', i, '') as string
-					if (image) payload.image = image
-
-					const footer = this.getNodeParameter('footer', i, '') as string
-					if (footer) payload.footer = footer
-
-					const includeButtons = this.getNodeParameter('includeButtons', i, false) as boolean
-					if (includeButtons) {
-						const buttonsData = this.getNodeParameter('buttons', i, {}) as IDataObject
-						const buttonValues = (buttonsData.buttonValues as IDataObject[]) || []
-
-						if (buttonValues.length > 0) {
-							payload.buttons = buttonValues.map(buildButton)
-						}
-					}
-					break
-				}
-
-				case 'product': {
-					payload = {
-						text: this.getNodeParameter('productText', i, '') as string,
-						catalogId: this.getNodeParameter('catalogId', i) as string,
-						productRetailerId: this.getNodeParameter('productRetailerId', i) as string,
-					}
-					break
-				}
-
-				case 'productList': {
-					const sectionsJson = this.getNodeParameter('productSections', i) as string
-					payload = {
-						text: this.getNodeParameter('productListText', i, '') as string,
-						header: this.getNodeParameter('productListHeader', i, '') as string,
-						catalogId: this.getNodeParameter('catalogId', i) as string,
-						sections: safeJsonParse(sectionsJson, []),
-					}
-					break
-				}
-			}
-
-			// Build request body
-			const requestBody = {
+			const requestBody: IDataObject = {
 				to,
 				type: messageType,
 				payload,
 			}
 
-			// Make API request
 			const response = await hyperflowApiRequest.call(
 				this,
 				'POST',
 				config.endpoints.sendMessage,
-				requestBody as IDataObject,
+				requestBody,
 			)
 
-			returnData.push({
-				json: response,
-				pairedItem: { item: i },
-			})
+			returnData.push({ json: response, pairedItem: { item: i } })
 		} catch (error) {
-			const errorMessage = error instanceof Error ? error.message : String(error)
+			const errorMessage = toEnrichedErrorMessage(error)
 			if (this.continueOnFail()) {
 				returnData.push({
-					json: {
-						error: errorMessage,
-					},
+					json: { error: errorMessage },
 					pairedItem: { item: i },
 				})
 				continue
@@ -219,4 +77,126 @@ export async function execute(
 	}
 
 	return returnData
+}
+
+function buildPayloadForMessageType(
+	this: IExecuteFunctions,
+	messageType: string,
+	i: number,
+): IDataObject {
+	const getParam = <T>(name: string, defaultValue?: T) =>
+		this.getNodeParameter(name, i, defaultValue) as T
+
+	switch (messageType) {
+		case 'text': {
+			const payload: IDataObject = { text: getParam<string>('text') }
+			const footer = getParam<string>('footer', '')
+			if (footer) payload.footer = footer
+			const includeButtons = getParam<boolean>('includeButtons', false)
+			if (includeButtons) {
+				const buttonsData = getParam<IDataObject>('buttons', {})
+				const buttonValues = (buttonsData?.buttonValues as IDataObject[]) ?? []
+				if (buttonValues.length > 0) payload.buttons = buttonValues.map(buildButton)
+			}
+			return payload
+		}
+
+		case 'image':
+		case 'video':
+		case 'audio':
+		case 'sticker': {
+			const payload: IDataObject = { url: getParam<string>('mediaUrl') }
+			if (messageType !== 'audio' && messageType !== 'sticker') {
+				const caption = getParam<string>('caption', '')
+				if (caption) payload.text = caption
+			}
+			return payload
+		}
+
+		case 'file': {
+			const payload: IDataObject = { url: getParam<string>('mediaUrl') }
+			const caption = getParam<string>('caption', '')
+			const fileName = getParam<string>('fileName', '')
+			if (caption) payload.text = caption
+			if (fileName) payload.name = fileName
+			return payload
+		}
+
+		case 'location':
+			return {
+				latitude: getParam<string>('latitude'),
+				longitude: getParam<string>('longitude'),
+				name: getParam<string>('locationName', ''),
+				address: getParam<string>('address', ''),
+			}
+
+		case 'contact':
+			return {
+				name: getParam<string>('contactName'),
+				phone: getParam<string>('contactPhone'),
+				email: getParam<string>('contactEmail', ''),
+				country: getParam<string>('countryCode', '55'),
+			}
+
+		case 'list': {
+			const payload: IDataObject = {
+				text: getParam<string>('listText'),
+				button: getParam<string>('listButton'),
+				sections: safeJsonParse(getParam<string>('sections'), []),
+			}
+			const footer = getParam<string>('footer', '')
+			if (footer) payload.footer = footer
+			return payload
+		}
+
+		case 'flows': {
+			const payload: IDataObject = {
+				text: getParam<string>('flowText'),
+				cta: getParam<string>('flowCta'),
+				flowAction: getParam<string>('flowAction'),
+				screen: getParam<string>('flowScreen', ''),
+				data: safeJsonParse(getParam<string>('flowData', '{}'), {}),
+				draft: getParam<boolean>('flowDraft', false),
+			}
+			payload[getParam<boolean>('useFlowName', false) ? 'flowName' : 'flowId'] =
+				getParam<string>('flowIdentifier')
+			return payload
+		}
+
+		case 'generic': {
+			const payload: IDataObject = {
+				title: getParam<string>('genericTitle', ''),
+				subtitle: getParam<string>('genericSubtitle', ''),
+			}
+			const image = getParam<string>('genericImage', '')
+			if (image) payload.image = image
+			const footer = getParam<string>('footer', '')
+			if (footer) payload.footer = footer
+			const includeButtons = getParam<boolean>('includeButtons', false)
+			if (includeButtons) {
+				const buttonsData = getParam<IDataObject>('buttons', {})
+				const buttonValues = (buttonsData?.buttonValues as IDataObject[]) ?? []
+				if (buttonValues.length > 0) payload.buttons = buttonValues.map(buildButton)
+			}
+			return payload
+		}
+
+		case 'product':
+			return {
+				text: getParam<string>('productText', ''),
+				catalogId: getParam<string>('catalogId'),
+				productRetailerId: getParam<string>('productRetailerId'),
+			}
+
+		case 'productList':
+			return {
+				text: getParam<string>('productListText', ''),
+				header: getParam<string>('productListHeader', ''),
+				catalogId: getParam<string>('catalogId'),
+				sections: safeJsonParse(getParam<string>('productSections'), []),
+			}
+
+		default:
+			return {}
+	}
 }

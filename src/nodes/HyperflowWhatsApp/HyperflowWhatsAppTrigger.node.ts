@@ -7,9 +7,7 @@ import type {
 } from 'n8n-workflow'
 import { safeJsonParse, sanitizePhoneNumber } from './GenericFunctions'
 
-// Helper functions
 function extractEventType(body: IDataObject): string {
-    // Check for status updates first (nested status object)
     if (body.status && typeof body.status === 'object') {
         const status = body.status as IDataObject
         const statusType = status.type as string
@@ -18,7 +16,6 @@ function extractEventType(body: IDataObject): string {
         }
     }
 
-    // Try to determine event type from webhook payload structure
     if (body.type) {
         const type = body.type as string
         if (type === 'message' || type === 'text' || type === 'image' || type === 'video' ||
@@ -40,9 +37,7 @@ function extractEventType(body: IDataObject): string {
         }
     }
 
-    // Check for nested structures
     if (body.entry && Array.isArray(body.entry)) {
-        // WhatsApp Cloud API format
         const entry = body.entry[0] as IDataObject
         if (entry && entry.changes && Array.isArray(entry.changes)) {
             const change = (entry.changes as IDataObject[])[0]
@@ -54,17 +49,14 @@ function extractEventType(body: IDataObject): string {
         }
     }
 
-    // Check for message content
     if (body.message || body.messages || body.text || body.from) {
         return 'message'
     }
 
-    // Check for status updates (generic check)
     if (body.statuses || body.delivery) {
         return 'status'
     }
 
-    // Check for interactive responses
     if (body.button || body.postback || body.interactive) {
         const interactive = body.interactive as IDataObject
         if (interactive) {
@@ -75,16 +67,14 @@ function extractEventType(body: IDataObject): string {
         return 'button'
     }
 
-    return 'message' // Default
+    return 'message'
 }
 
 function extractFromNumber(body: IDataObject): string | null {
-    // Try different payload structures
     if (body.from) return body.from as string
     if (body.sender) return body.sender as string
     if (body.phone) return body.phone as string
 
-    // WhatsApp Cloud API format
     if (body.entry && Array.isArray(body.entry)) {
         const entry = body.entry[0] as IDataObject
         if (entry && entry.changes && Array.isArray(entry.changes)) {
@@ -103,7 +93,6 @@ function extractFromNumber(body: IDataObject): string | null {
         }
     }
 
-    // Nested message object
     if (body.message && typeof body.message === 'object') {
         const message = body.message as IDataObject
         if (message.from) return message.from as string
@@ -148,7 +137,7 @@ function extractCloudApiMessage(body: IDataObject): IDataObject {
             result.phoneNumberId = (value.metadata as IDataObject).phone_number_id
         }
     } catch {
-        // If parsing fails, return empty result
+        void 0
     }
 
     return result
@@ -156,16 +145,12 @@ function extractCloudApiMessage(body: IDataObject): IDataObject {
 
 function parseWebhookData(body: IDataObject, eventType: string): IDataObject {
     const result: IDataObject = {}
-
-    // Extract common fields
     result.from = extractFromNumber(body)
 
-    // Try to extract message ID
     if (body.id) result.messageId = body.id
     if (body.messageId) result.messageId = body.messageId
     if (body.wamid) result.messageId = body.wamid
 
-    // Parse based on event type
     switch (eventType) {
         case 'message':
             result.messageType = body.type || 'text'
@@ -177,7 +162,6 @@ function parseWebhookData(body: IDataObject, eventType: string): IDataObject {
                 if (msg.body) result.text = msg.body
                 if (msg.type) result.messageType = msg.type
             }
-            // WhatsApp Cloud API format
             if (body.entry && Array.isArray(body.entry)) {
                 const extracted = extractCloudApiMessage(body)
                 Object.assign(result, extracted)
@@ -190,7 +174,7 @@ function parseWebhookData(body: IDataObject, eventType: string): IDataObject {
                 if (status.type) result.status = status.type
                 if (status.id) result.messageId = status.id
                 if (status.externalId) result.externalId = status.externalId
-                Object.assign(result, status) // Include all status fields
+                Object.assign(result, status)
             } else if (body.status) {
                 result.status = body.status
             }
@@ -233,7 +217,7 @@ function parseWebhookData(body: IDataObject, eventType: string): IDataObject {
 
 export class HyperflowWhatsAppTrigger implements INodeType {
     description: INodeTypeDescription = {
-        displayName: 'Gatilho Hyperflow WhatsApp',
+        displayName: 'Hyperflow WhatsApp Trigger',
         name: 'hyperflowWhatsAppTrigger',
         icon: 'file:hyperflow.svg',
         group: ['trigger'],
@@ -241,7 +225,7 @@ export class HyperflowWhatsAppTrigger implements INodeType {
         subtitle: '={{$parameter["events"].join(", ")}}',
         description: 'Inicia o fluxo quando eventos do WhatsApp ocorrem',
         defaults: {
-            name: 'Gatilho Hyperflow WhatsApp',
+            name: 'Hyperflow WhatsApp Trigger',
         },
         inputs: [],
         outputs: ['main'],
@@ -327,24 +311,20 @@ export class HyperflowWhatsAppTrigger implements INodeType {
         const events = this.getNodeParameter('events', []) as string[]
         const options = this.getNodeParameter('options', {}) as IDataObject
 
-        // Validate that this is a WhatsApp webhook event
         if (!body || typeof body !== 'object') {
             return {
                 webhookResponse: { status: 'ok' },
             }
         }
 
-        // Extract event type from webhook payload
         const eventType = extractEventType(body)
 
-        // Check if this event type is in the selected events
         if (!events.includes(eventType)) {
             return {
                 webhookResponse: { status: 'ok', message: 'Tipo de evento não inscrito' },
             }
         }
 
-        // Apply filters
         if (options.filterNumbers) {
             const allowedNumbers = (options.filterNumbers as string)
                 .split(',')
@@ -360,7 +340,6 @@ export class HyperflowWhatsAppTrigger implements INodeType {
             }
         }
 
-        // Build output data
         const outputData: IDataObject = {
             eventType,
             timestamp: new Date().toISOString(),

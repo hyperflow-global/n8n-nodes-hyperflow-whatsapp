@@ -1,9 +1,3 @@
-/**
- * Hyperflow WhatsApp Node
- *
- * Send WhatsApp messages via Hyperflow API
- */
-
 import type {
 	IExecuteFunctions,
 	INodeExecutionData,
@@ -22,33 +16,19 @@ export class HyperflowWhatsApp implements INodeType {
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
 		description: 'Enviar mensagens do WhatsApp via API Hyperflow',
-		defaults: {
-			name: 'Hyperflow WhatsApp',
-		},
+		defaults: { name: 'Hyperflow WhatsApp' },
 		inputs: ['main'],
 		outputs: ['main'],
-		credentials: [
-			{
-				name: 'hyperflowWhatsAppAccount',
-				required: true,
-			},
-		],
+		credentials: [{ name: 'hyperflowWhatsAppAccount', required: true }],
 		properties: [
-			// Resource selector
 			{
 				displayName: 'Recurso',
 				name: 'resource',
 				type: 'options',
 				noDataExpression: true,
-				options: [
-					{
-						name: 'Mensagem',
-						value: 'message',
-					},
-				],
+				options: [{ name: 'Mensagem', value: 'message' }],
 				default: 'message',
 			},
-			// Message resource descriptions (operations + fields)
 			...message.descriptions,
 		],
 	}
