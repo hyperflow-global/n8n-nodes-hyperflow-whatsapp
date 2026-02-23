@@ -7,7 +7,32 @@ import type {
 } from 'n8n-workflow'
 import { safeJsonParse, sanitizePhoneNumber } from './GenericFunctions'
 
-function extractEventType(body: IDataObject): string {
+type WebhookEventCategory = 'message' | 'status' | 'button' | 'list' | 'flow'
+
+const RAW_TYPE_TO_CATEGORY: Record<string, WebhookEventCategory> = {
+    message: 'message',
+    text: 'message',
+    image: 'message',
+    video: 'message',
+    audio: 'message',
+    document: 'message',
+    sticker: 'message',
+    location: 'message',
+    contact: 'message',
+    voice: 'message',
+    status: 'status',
+    delivery: 'status',
+    read: 'status',
+    sent: 'status',
+    button: 'button',
+    postback: 'button',
+    list: 'list',
+    list_reply: 'list',
+    flow: 'flow',
+    nfm_reply: 'flow',
+} as const
+
+function extractEventType(body: IDataObject): WebhookEventCategory {
     if (body.status && typeof body.status === 'object') {
         const status = body.status as IDataObject
         const statusType = status.type as string
@@ -16,25 +41,10 @@ function extractEventType(body: IDataObject): string {
         }
     }
 
-    if (body.type) {
-        const type = body.type as string
-        if (type === 'message' || type === 'text' || type === 'image' || type === 'video' ||
-            type === 'audio' || type === 'document' || type === 'sticker' || type === 'location' ||
-            type === 'contact' || type === 'voice') {
-            return 'message'
-        }
-        if (type === 'status' || type === 'delivery' || type === 'read' || type === 'sent') {
-            return 'status'
-        }
-        if (type === 'button' || type === 'postback') {
-            return 'button'
-        }
-        if (type === 'list' || type === 'list_reply') {
-            return 'list'
-        }
-        if (type === 'flow' || type === 'nfm_reply') {
-            return 'flow'
-        }
+    const rawType = body.type
+    if (typeof rawType === 'string') {
+        const category = RAW_TYPE_TO_CATEGORY[rawType]
+        if (category) return category
     }
 
     if (body.entry && Array.isArray(body.entry)) {
@@ -223,7 +233,8 @@ export class HyperflowWhatsAppTrigger implements INodeType {
         group: ['trigger'],
         version: 1,
         subtitle: '={{$parameter["events"].join(", ")}}',
-        description: 'Inicia o fluxo quando eventos do WhatsApp ocorrem',
+        description:
+            'Inicia o fluxo quando eventos do WhatsApp ocorrem. A resposta HTTP (200 OK) é enviada automaticamente ao receber o webhook — não use o nó "Respond to Webhook" neste workflow.',
         defaults: {
             name: 'Hyperflow WhatsApp Trigger',
         },

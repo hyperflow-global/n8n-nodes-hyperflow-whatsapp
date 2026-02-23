@@ -4,7 +4,7 @@ import {
     sanitizePhoneNumber,
     buildButton,
     isNonEmptyString,
-} from '../index'
+} from '../../nodes/HyperflowWhatsApp/GenericFunctions'
 
 describe('Utils', () => {
     describe('safeJsonParse', () => {

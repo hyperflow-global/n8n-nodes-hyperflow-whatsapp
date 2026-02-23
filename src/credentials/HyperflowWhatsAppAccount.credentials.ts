@@ -15,7 +15,7 @@ export class HyperflowWhatsAppAccount implements ICredentialType {
     properties: INodeProperties[] = [
         {
             displayName: 'Chave de API',
-            name: 'api-key',
+            name: 'apiKey',
             type: 'string',
             typeOptions: {
                 password: true,

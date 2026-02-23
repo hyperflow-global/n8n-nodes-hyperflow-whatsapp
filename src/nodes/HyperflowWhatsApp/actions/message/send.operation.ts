@@ -2,30 +2,13 @@ import type { IExecuteFunctions, INodeExecutionData, IDataObject } from 'n8n-wor
 import { NodeOperationError } from 'n8n-workflow'
 import {
 	hyperflowApiRequest,
+	toEnrichedErrorMessage,
 	safeJsonParse,
 	buildButton,
 	isValidPhoneNumber,
 	sanitizePhoneNumber,
 } from '../../GenericFunctions'
 import { config } from '../../../../config'
-
-interface HttpError extends Error {
-	response?: { status?: number; data?: unknown }
-	statusCode?: number
-}
-
-function toEnrichedErrorMessage(error: unknown): string {
-	const base = error instanceof Error ? error.message : String(error)
-	const err = error as HttpError
-	if (err.response?.status !== undefined) {
-		const body = err.response.data
-		const bodyStr =
-			body != null ? (typeof body === 'string' ? body : JSON.stringify(body)) : ''
-		return `[${err.response.status}] ${base}${bodyStr ? ` — ${bodyStr}` : ''}`
-	}
-	if (err.statusCode !== undefined) return `[${err.statusCode}] ${base}`
-	return base
-}
 
 export async function execute(
 	this: IExecuteFunctions,

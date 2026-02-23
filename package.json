@@ -1,5 +1,5 @@
 {
-  "name": "n8n-nodes-hyperflow-whatsapp",
+  "name": "@hyperflow-global/n8n-nodes-hyperflow-whatsapp",
   "version": "1.0.0",
   "description": "n8n community node for Hyperflow WhatsApp API integration",
   "keywords": [
@@ -7,7 +7,8 @@
     "n8n",
     "whatsapp",
     "hyperflow",
-    "whatsapp-business"
+    "whatsapp-business",
+    "messaging"
   ],
   "license": "MIT",
   "homepage": "https://github.com/hyperflow-global/n8n-nodes-hyperflow",
@@ -17,24 +18,24 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hyperflow/n8n-nodes-hyperflow.git"
+    "url": "https://github.com/hyperflow-global/n8n-nodes-hyperflow.git"
   },
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc && gulp build:icons && gulp build:nodeJson",
-    "dev": "npm run build && N8N_CUSTOM_EXTENSIONS=$(pwd) npx n8n",
-    "dev-n8n": "n8n-node dev",
+    "dev": "tsc --watch",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint src --ext .ts",
     "lintfix": "eslint src --ext .ts --fix",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run lint && npm run test && npm run build"
   },
   "files": [
-    "dist"
+    "dist",
+    "LICENSE",
+    "README.md"
   ],
   "n8n": {
     "n8nNodesApiVersion": 1,

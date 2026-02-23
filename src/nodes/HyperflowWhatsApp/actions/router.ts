@@ -6,6 +6,7 @@ export async function router(this: IExecuteFunctions): Promise<INodeExecutionDat
 	const items = this.getInputData()
 	const resource = this.getNodeParameter('resource', 0) as string
 	const operation = this.getNodeParameter('operation', 0) as string
+
 	let returnData: INodeExecutionData[] = []
 
 	switch (resource) {
