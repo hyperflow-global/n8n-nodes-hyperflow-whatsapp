@@ -7,7 +7,7 @@ import type {
 import { config } from '../config'
 
 export class HyperflowWhatsAppAccount implements ICredentialType {
-    name = 'hyperflowWhatsAppAccount'
+    name = 'HyperflowWhatsAppAccount'
     displayName = 'Conta Hyperflow WhatsApp'
     documentationUrl = 'https://help.hyperflow.global/'
     icon: ICredentialType['icon'] = 'file:hyperflow.svg'

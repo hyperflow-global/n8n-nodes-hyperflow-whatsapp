@@ -21,10 +21,10 @@ describe('HyperflowWhatsApp Node', () => {
             expect(node.description.version).toBe(1)
         })
 
-        it('should require hyperflowWhatsAppAccount credentials', () => {
+        it('should require HyperflowWhatsAppAccount credentials', () => {
             expect(node.description.credentials).toEqual([
                 {
-                    name: 'hyperflowWhatsAppAccount',
+                    name: 'HyperflowWhatsAppAccount',
                     required: true,
                 },
             ])
@@ -143,7 +143,7 @@ describe('HyperflowWhatsApp Node', () => {
             expect(result[0]![0]!.json).toEqual(mockResponse)
 
             expect(mockExecuteFunctions.helpers.httpRequestWithAuthentication).toHaveBeenCalledWith(
-                'hyperflowWhatsAppAccount',
+                'HyperflowWhatsAppAccount',
                 expect.objectContaining({
                     method: 'POST',
                     url: expect.stringContaining('/whatsapp/send-message'),

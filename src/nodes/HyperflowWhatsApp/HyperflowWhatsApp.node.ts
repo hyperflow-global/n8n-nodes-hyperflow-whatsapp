@@ -19,7 +19,7 @@ export class HyperflowWhatsApp implements INodeType {
 		defaults: { name: 'Hyperflow WhatsApp' },
 		inputs: ['main'],
 		outputs: ['main'],
-		credentials: [{ name: 'hyperflowWhatsAppAccount', required: true }],
+		credentials: [{ name: 'HyperflowWhatsAppAccount', required: true }],
 		properties: [
 			{
 				displayName: 'Recurso',

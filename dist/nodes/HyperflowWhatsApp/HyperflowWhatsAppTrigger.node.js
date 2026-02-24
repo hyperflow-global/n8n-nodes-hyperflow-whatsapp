@@ -20,7 +20,7 @@ class HyperflowWhatsAppTrigger {
             outputs: ['main'],
             credentials: [
                 {
-                    name: 'hyperflowWhatsAppAccount',
+                    name: 'HyperflowWhatsAppAccount',
                     required: true,
                 },
             ],

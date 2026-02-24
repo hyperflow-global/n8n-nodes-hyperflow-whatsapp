@@ -29,7 +29,7 @@ export class HyperflowWhatsAppTrigger implements INodeType {
         outputs: ['main'],
         credentials: [
             {
-                name: 'hyperflowWhatsAppAccount',
+                name: 'HyperflowWhatsAppAccount',
                 required: true,
             },
         ],

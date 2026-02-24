@@ -12,7 +12,7 @@ exports.buildButton = buildButton;
 exports.extractButtonsPayload = extractButtonsPayload;
 const n8n_workflow_1 = require("n8n-workflow");
 const config_1 = require("../../config");
-const CREDENTIAL_NAME = 'hyperflowWhatsAppAccount';
+const CREDENTIAL_NAME = 'HyperflowWhatsAppAccount';
 const PHONE_SANITIZE_REGEX = /[\s\-()+]/g;
 const PHONE_VALID_REGEX = /^\d{8,15}$/;
 function toEnrichedErrorMessage(error) {

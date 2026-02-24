@@ -8,7 +8,7 @@ import type {
 import { NodeOperationError } from 'n8n-workflow'
 import { config } from '../../config'
 
-const CREDENTIAL_NAME = 'hyperflowWhatsAppAccount'
+const CREDENTIAL_NAME = 'HyperflowWhatsAppAccount'
 
 const PHONE_SANITIZE_REGEX = /[\s\-()+]/g
 const PHONE_VALID_REGEX = /^\d{8,15}$/

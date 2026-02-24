@@ -4,7 +4,7 @@ exports.HyperflowWhatsAppAccount = void 0;
 const config_1 = require("../config");
 class HyperflowWhatsAppAccount {
     constructor() {
-        this.name = 'hyperflowWhatsAppAccount';
+        this.name = 'HyperflowWhatsAppAccount';
         this.displayName = 'Conta Hyperflow WhatsApp';
         this.documentationUrl = 'https://help.hyperflow.global/';
         this.icon = 'file:hyperflow.svg';
