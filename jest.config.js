@@ -2,13 +2,17 @@
 module.exports = {
     preset: 'ts-jest',
     testEnvironment: 'jsdom',
-    roots: ['<rootDir>/src'],
+    roots: ['<rootDir>'],
     testMatch: ['**/__tests__/**/*.test.ts'],
     moduleFileExtensions: ['ts', 'js', 'json'],
     collectCoverageFrom: [
-        'src/**/*.ts',
-        '!src/**/*.d.ts',
-        '!src/index.ts',
+        '**/*.ts',
+        '!**/*.d.ts',
+        '!index.ts',
+        '!node_modules/**',
+        '!dist/**',
+        '!**/__tests__/**',
+        '!**/__mocks__/**',
     ],
     coverageDirectory: 'coverage',
     coverageReporters: ['text', 'lcov', 'html'],
@@ -21,8 +25,7 @@ module.exports = {
         },
     },
     verbose: true,
-    // Mock node-localstorage which causes issues in test environment
     moduleNameMapper: {
-        '^node-localstorage$': '<rootDir>/src/__mocks__/node-localstorage.ts',
+        '^node-localstorage$': '<rootDir>/__mocks__/node-localstorage.ts',
     },
 }

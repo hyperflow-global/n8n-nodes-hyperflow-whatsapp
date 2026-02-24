@@ -24,9 +24,9 @@
   "scripts": {
     "build": "tsc && gulp build:icons && gulp build:nodeJson",
     "dev": "tsc --watch",
-    "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "eslint src --ext .ts",
-    "lintfix": "eslint src --ext .ts --fix",
+    "format": "prettier --write \"**/*.ts\" --ignore-path .gitignore",
+    "lint": "eslint . --ext .ts --ignore-pattern dist/ --ignore-pattern node_modules/",
+    "lintfix": "eslint . --ext .ts --fix --ignore-pattern dist/ --ignore-pattern node_modules/",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
