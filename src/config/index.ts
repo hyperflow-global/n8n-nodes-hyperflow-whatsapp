@@ -1,7 +1,5 @@
-const DEFAULT_API_URL = 'https://messaging.hyperflowapis.global'
-
 export const config = {
-	apiUrl: process.env.HYPERFLOW_API_URL || DEFAULT_API_URL,
+	apiUrl: 'https://messaging.hyperflowapis.global',
 	endpoints: {
 		sendMessage: '/whatsapp/send-message',
 		health: '/whatsapp/templates',

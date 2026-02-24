@@ -8,7 +8,7 @@ n8n community node for Hyperflow WhatsApp API integration.
 
 1. Go to **Settings** > **Community Nodes**
 2. Select **Install a community node**
-3. Enter `n8n-nodes-hyperflow-whatsapp`
+3. Enter `@hyperflow-global/n8n-nodes-hyperflow-whatsapp`
 4. Click **Install**
 
 ### Manual Installation
@@ -18,14 +18,13 @@ n8n community node for Hyperflow WhatsApp API integration.
 cd ~/.n8n
 
 # Install the package
-npm install n8n-nodes-hyperflow-whatsapp
+npm install @hyperflow-global/n8n-nodes-hyperflow-whatsapp
 ```
 
 ### Development Installation (Local)
 
 ```bash
 # Build the project
-cd new-wa-commnode
 npm install
 npm run build
 
@@ -34,7 +33,7 @@ npm link
 
 # In your n8n installation
 cd ~/.n8n
-npm link n8n-nodes-hyperflow-whatsapp
+npm link @hyperflow-global/n8n-nodes-hyperflow-whatsapp
 ```
 
 ## Configuration
@@ -44,19 +43,7 @@ npm link n8n-nodes-hyperflow-whatsapp
 1. In n8n, go to **Credentials** > **Add Credential**
 2. Search for "Hyperflow WhatsApp Account"
 3. Configure:
-   - **Client ID**: Your client ID for authentication
-
-### Environment Variables (Optional)
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `HYPERFLOW_API_URL` | `https://messaging.hyperflowapis.global` | Base URL for the Hyperflow API |
-
-To override the default API URL, set the environment variable before starting n8n:
-
-```bash
-export HYPERFLOW_API_URL=https://your-custom-url.com
-```
+   - **API Key**: Your API key for authentication
 
 ## Available Nodes
 
