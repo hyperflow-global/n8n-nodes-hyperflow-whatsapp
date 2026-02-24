@@ -139,8 +139,8 @@ describe('HyperflowWhatsApp Node', () => {
             const result = await node.execute.call(mockExecuteFunctions)
 
             expect(result).toHaveLength(1)
-            expect(result[0]).toHaveLength(1)
-            expect(result[0][0].json).toEqual(mockResponse)
+            expect(result[0]!).toHaveLength(1)
+            expect(result[0]![0]!.json).toEqual(mockResponse)
 
             expect(mockExecuteFunctions.helpers.httpRequestWithAuthentication).toHaveBeenCalledWith(
                 'hyperflowWhatsAppAccount',
@@ -185,9 +185,9 @@ describe('HyperflowWhatsApp Node', () => {
 
             const result = await node.execute.call(mockExecuteFunctions)
 
-            expect(result[0][0].json).toEqual(mockResponse)
+            expect(result[0]![0]!.json).toEqual(mockResponse)
 
-            const callArgs = mockHttpRequest.mock.calls[0]
+            const callArgs = mockHttpRequest.mock.calls[0]!
             const requestBody = callArgs[1].body
 
             expect(requestBody.payload.buttons).toHaveLength(2)
@@ -226,7 +226,7 @@ describe('HyperflowWhatsApp Node', () => {
 
             await node.execute.call(mockExecuteFunctions)
 
-            const callArgs = mockHttpRequest.mock.calls[0]
+            const callArgs = mockHttpRequest.mock.calls[0]!
             const requestBody = callArgs[1].body
 
             expect(requestBody.type).toBe('image')
@@ -257,7 +257,7 @@ describe('HyperflowWhatsApp Node', () => {
 
             await node.execute.call(mockExecuteFunctions)
 
-            const callArgs = mockHttpRequest.mock.calls[0]
+            const callArgs = mockHttpRequest.mock.calls[0]!
             const requestBody = callArgs[1].body
 
             expect(requestBody.type).toBe('location')
@@ -295,7 +295,7 @@ describe('HyperflowWhatsApp Node', () => {
 
             await node.execute.call(mockExecuteFunctions)
 
-            const callArgs = mockHttpRequest.mock.calls[0]
+            const callArgs = mockHttpRequest.mock.calls[0]!
             const requestBody = callArgs[1].body
 
             expect(requestBody.type).toBe('template')
@@ -345,7 +345,7 @@ describe('HyperflowWhatsApp Node', () => {
 
             const result = await node.execute.call(mockExecuteFunctions)
 
-            expect(result[0][0].json).toHaveProperty('error', 'API Error')
+            expect(result[0]![0]!.json).toHaveProperty('error', 'API Error')
         })
 
         it('should handle multiple items', async () => {
@@ -383,7 +383,7 @@ describe('HyperflowWhatsApp Node', () => {
 
             const result = await node.execute.call(mockExecuteFunctions)
 
-            expect(result[0]).toHaveLength(2)
+            expect(result[0]!).toHaveLength(2)
             expect(mockHttpRequest).toHaveBeenCalledTimes(2)
         })
     })

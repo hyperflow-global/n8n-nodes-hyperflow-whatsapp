@@ -1,13 +1,25 @@
 import type { IDataObject, IExecuteFunctions, INodeExecutionData } from 'n8n-workflow'
-import { NodeOperationError } from 'n8n-workflow'
 import { config } from '../../../../config'
 import {
 	hyperflowApiRequest,
-	toEnrichedErrorMessage,
-	isValidPhoneNumber,
+	resolveRecipient,
+	handleOperationError,
 	safeJsonParse,
-	sanitizePhoneNumber,
 } from '../../GenericFunctions'
+
+interface TemplateHeaderFields {
+	headerParameter: string
+	headerImageUrl: string
+	headerVideoUrl: string
+	headerDocumentUrl: string
+}
+
+const HEADER_FIELD_MAP: Record<keyof TemplateHeaderFields, string> = {
+	headerParameter: 'headerParameter',
+	headerImageUrl: 'imageUrl',
+	headerVideoUrl: 'videoUrl',
+	headerDocumentUrl: 'documentUrl',
+}
 
 export async function execute(
 	this: IExecuteFunctions,
@@ -17,67 +29,42 @@ export async function execute(
 
 	for (let i = 0; i < items.length; i++) {
 		try {
-			const rawTo = this.getNodeParameter('to', i) as string
-			const to = sanitizePhoneNumber(rawTo)
-
-			if (!isValidPhoneNumber(to)) {
-				throw new NodeOperationError(
-					this.getNode(),
-					`Invalid phone number: "${rawTo}". Use format with country code (e.g., 5511999999999)`,
-					{ itemIndex: i },
-				)
-			}
-
-			const parametersJson = this.getNodeParameter('templateParameters', i, '[]') as string
-			const buttonsJson = this.getNodeParameter('templateButtons', i, '[]') as string
-
-			const payload: IDataObject = {
-				name: this.getNodeParameter('templateName', i) as string,
-				language: this.getNodeParameter('templateLanguage', i) as string,
-				parameters: safeJsonParse(parametersJson, []),
-			}
-
-			const headerParameter = this.getNodeParameter('headerParameter', i, '') as string
-			if (headerParameter) payload.headerParameter = headerParameter
-
-			const headerImageUrl = this.getNodeParameter('headerImageUrl', i, '') as string
-			if (headerImageUrl) payload.imageUrl = headerImageUrl
-
-			const headerVideoUrl = this.getNodeParameter('headerVideoUrl', i, '') as string
-			if (headerVideoUrl) payload.videoUrl = headerVideoUrl
-
-			const headerDocumentUrl = this.getNodeParameter('headerDocumentUrl', i, '') as string
-			if (headerDocumentUrl) payload.documentUrl = headerDocumentUrl
-
-			const buttons = safeJsonParse<IDataObject[]>(buttonsJson, [])
-			if (buttons.length > 0) payload.buttons = buttons
-
-			const requestBody: IDataObject = {
-				to,
-				type: 'template',
-				payload,
-			}
+			const to = resolveRecipient(this, i)
+			const payload = buildTemplatePayload(this, i)
 
 			const response = await hyperflowApiRequest.call(
 				this,
 				'POST',
 				config.endpoints.sendMessage,
-				requestBody,
+				{ to, type: 'template', payload },
 			)
 
 			returnData.push({ json: response, pairedItem: { item: i } })
 		} catch (error) {
-			const errorMessage = toEnrichedErrorMessage(error)
-			if (this.continueOnFail()) {
-				returnData.push({
-					json: { error: errorMessage },
-					pairedItem: { item: i },
-				})
-				continue
-			}
-			throw new NodeOperationError(this.getNode(), errorMessage, { itemIndex: i })
+			handleOperationError(this, error, i, returnData)
 		}
 	}
 
 	return returnData
+}
+
+function buildTemplatePayload(ctx: IExecuteFunctions, i: number): IDataObject {
+	const payload: IDataObject = {
+		name: ctx.getNodeParameter('templateName', i) as string,
+		language: ctx.getNodeParameter('templateLanguage', i) as string,
+		parameters: safeJsonParse(ctx.getNodeParameter('templateParameters', i, '[]') as string, []),
+	}
+
+	for (const [paramName, payloadKey] of Object.entries(HEADER_FIELD_MAP)) {
+		const value = ctx.getNodeParameter(paramName, i, '') as string
+		if (value) payload[payloadKey] = value
+	}
+
+	const buttons = safeJsonParse<IDataObject[]>(
+		ctx.getNodeParameter('templateButtons', i, '[]') as string,
+		[],
+	)
+	if (buttons.length > 0) payload.buttons = buttons
+
+	return payload
 }

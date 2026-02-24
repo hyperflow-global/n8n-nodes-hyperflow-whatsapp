@@ -5,225 +5,12 @@ import type {
     IWebhookFunctions,
     IWebhookResponseData,
 } from 'n8n-workflow'
-import { safeJsonParse, sanitizePhoneNumber } from './GenericFunctions'
-
-type WebhookEventCategory = 'message' | 'status' | 'button' | 'list' | 'flow'
-
-const RAW_TYPE_TO_CATEGORY: Record<string, WebhookEventCategory> = {
-    message: 'message',
-    text: 'message',
-    image: 'message',
-    video: 'message',
-    audio: 'message',
-    document: 'message',
-    sticker: 'message',
-    location: 'message',
-    contact: 'message',
-    voice: 'message',
-    status: 'status',
-    delivery: 'status',
-    read: 'status',
-    sent: 'status',
-    button: 'button',
-    postback: 'button',
-    list: 'list',
-    list_reply: 'list',
-    flow: 'flow',
-    nfm_reply: 'flow',
-} as const
-
-function extractEventType(body: IDataObject): WebhookEventCategory {
-    if (body.status && typeof body.status === 'object') {
-        const status = body.status as IDataObject
-        const statusType = status.type as string
-        if (statusType === 'status' || statusType === 'delivery' || statusType === 'read' || statusType === 'sent') {
-            return 'status'
-        }
-    }
-
-    const rawType = body.type
-    if (typeof rawType === 'string') {
-        const category = RAW_TYPE_TO_CATEGORY[rawType]
-        if (category) return category
-    }
-
-    if (body.entry && Array.isArray(body.entry)) {
-        const entry = body.entry[0] as IDataObject
-        if (entry && entry.changes && Array.isArray(entry.changes)) {
-            const change = (entry.changes as IDataObject[])[0]
-            if (change && change.value) {
-                const value = change.value as IDataObject
-                if (value.messages) return 'message'
-                if (value.statuses) return 'status'
-            }
-        }
-    }
-
-    if (body.message || body.messages || body.text || body.from) {
-        return 'message'
-    }
-
-    if (body.statuses || body.delivery) {
-        return 'status'
-    }
-
-    if (body.button || body.postback || body.interactive) {
-        const interactive = body.interactive as IDataObject
-        if (interactive) {
-            if (interactive.type === 'button_reply') return 'button'
-            if (interactive.type === 'list_reply') return 'list'
-            if (interactive.type === 'nfm_reply') return 'flow'
-        }
-        return 'button'
-    }
-
-    return 'message'
-}
-
-function extractFromNumber(body: IDataObject): string | null {
-    if (body.from) return body.from as string
-    if (body.sender) return body.sender as string
-    if (body.phone) return body.phone as string
-
-    if (body.entry && Array.isArray(body.entry)) {
-        const entry = body.entry[0] as IDataObject
-        if (entry && entry.changes && Array.isArray(entry.changes)) {
-            const change = (entry.changes as IDataObject[])[0]
-            if (change && change.value) {
-                const value = change.value as IDataObject
-                if (value.messages && Array.isArray(value.messages)) {
-                    const message = (value.messages as IDataObject[])[0]
-                    if (message && message.from) return message.from as string
-                }
-                if (value.contacts && Array.isArray(value.contacts)) {
-                    const contact = (value.contacts as IDataObject[])[0]
-                    if (contact && contact.wa_id) return contact.wa_id as string
-                }
-            }
-        }
-    }
-
-    if (body.message && typeof body.message === 'object') {
-        const message = body.message as IDataObject
-        if (message.from) return message.from as string
-    }
-
-    return null
-}
-
-function extractCloudApiMessage(body: IDataObject): IDataObject {
-    const result: IDataObject = {}
-
-    try {
-        const entry = (body.entry as IDataObject[])[0]
-        const change = (entry.changes as IDataObject[])[0]
-        const value = change.value as IDataObject
-
-        if (value.messages && Array.isArray(value.messages)) {
-            const message = (value.messages as IDataObject[])[0]
-            result.messageId = message.id
-            result.messageType = message.type
-
-            if (message.text && typeof message.text === 'object') {
-                result.text = (message.text as IDataObject).body
-            }
-            if (message.image) result.media = message.image
-            if (message.video) result.media = message.video
-            if (message.audio) result.media = message.audio
-            if (message.document) result.media = message.document
-            if (message.sticker) result.media = message.sticker
-            if (message.location) result.location = message.location
-            if (message.contacts) result.contacts = message.contacts
-            if (message.interactive) result.interactive = message.interactive
-        }
-
-        if (value.contacts && Array.isArray(value.contacts)) {
-            const contact = (value.contacts as IDataObject[])[0]
-            result.contactName = (contact.profile as IDataObject)?.name
-            result.from = contact.wa_id
-        }
-
-        if (value.metadata) {
-            result.phoneNumberId = (value.metadata as IDataObject).phone_number_id
-        }
-    } catch {
-        void 0
-    }
-
-    return result
-}
-
-function parseWebhookData(body: IDataObject, eventType: string): IDataObject {
-    const result: IDataObject = {}
-    result.from = extractFromNumber(body)
-
-    if (body.id) result.messageId = body.id
-    if (body.messageId) result.messageId = body.messageId
-    if (body.wamid) result.messageId = body.wamid
-
-    switch (eventType) {
-        case 'message':
-            result.messageType = body.type || 'text'
-            if (body.text) result.text = body.text
-            if (body.body) result.text = body.body
-            if (body.message && typeof body.message === 'object') {
-                const msg = body.message as IDataObject
-                if (msg.text) result.text = msg.text
-                if (msg.body) result.text = msg.body
-                if (msg.type) result.messageType = msg.type
-            }
-            if (body.entry && Array.isArray(body.entry)) {
-                const extracted = extractCloudApiMessage(body)
-                Object.assign(result, extracted)
-            }
-            break
-
-        case 'status':
-            if (body.status && typeof body.status === 'object') {
-                const status = body.status as IDataObject
-                if (status.type) result.status = status.type
-                if (status.id) result.messageId = status.id
-                if (status.externalId) result.externalId = status.externalId
-                Object.assign(result, status)
-            } else if (body.status) {
-                result.status = body.status
-            }
-            if (body.delivery) result.status = 'delivered'
-            if (body.read) result.status = 'read'
-            break
-
-        case 'button':
-        case 'list':
-            if (body.payload) result.payload = body.payload
-            if (body.data) result.data = body.data
-            if (body.id) result.buttonId = body.id
-            if (body.title) result.buttonTitle = body.title
-            if (body.interactive && typeof body.interactive === 'object') {
-                const interactive = body.interactive as IDataObject
-                if (interactive.button_reply) {
-                    const reply = interactive.button_reply as IDataObject
-                    result.buttonId = reply.id
-                    result.buttonTitle = reply.title
-                }
-                if (interactive.list_reply) {
-                    const reply = interactive.list_reply as IDataObject
-                    result.listId = reply.id
-                    result.listTitle = reply.title
-                    result.listDescription = reply.description
-                }
-            }
-            break
-
-        case 'flow':
-            if (body.response_json) {
-                result.flowResponse = safeJsonParse(body.response_json as string, body.response_json)
-            }
-            if (body.data) result.flowResponse = body.data
-            break
-    }
-
-    return result
-}
+import { sanitizePhoneNumber } from './GenericFunctions'
+import {
+    extractEventType,
+    extractFromNumber,
+    parseWebhookData,
+} from './WebhookHelpers'
 
 export class HyperflowWhatsAppTrigger implements INodeType {
     description: INodeTypeDescription = {
@@ -323,9 +110,7 @@ export class HyperflowWhatsAppTrigger implements INodeType {
         const options = this.getNodeParameter('options', {}) as IDataObject
 
         if (!body || typeof body !== 'object') {
-            return {
-                webhookResponse: { status: 'ok' },
-            }
+            return { webhookResponse: { status: 'ok' } }
         }
 
         const eventType = extractEventType(body)
@@ -336,18 +121,9 @@ export class HyperflowWhatsAppTrigger implements INodeType {
             }
         }
 
-        if (options.filterNumbers) {
-            const allowedNumbers = (options.filterNumbers as string)
-                .split(',')
-                .map((n) => sanitizePhoneNumber(n.trim()))
-                .filter(Boolean)
-
-            const fromNumber = extractFromNumber(body)
-            const sanitizedFromNumber = fromNumber ? sanitizePhoneNumber(fromNumber) : null
-            if (allowedNumbers.length > 0 && sanitizedFromNumber && !allowedNumbers.includes(sanitizedFromNumber)) {
-                return {
-                    webhookResponse: { status: 'ok', message: 'Número não está na lista de filtros' },
-                }
+        if (isFilteredOut(body, options)) {
+            return {
+                webhookResponse: { status: 'ok', message: 'Número não está na lista de filtros' },
             }
         }
 
@@ -363,4 +139,20 @@ export class HyperflowWhatsAppTrigger implements INodeType {
             workflowData: [this.helpers.returnJsonArray([outputData])],
         }
     }
+}
+
+function isFilteredOut(body: IDataObject, options: IDataObject): boolean {
+    if (!options.filterNumbers) return false
+
+    const allowedNumbers = (options.filterNumbers as string)
+        .split(',')
+        .map((n) => sanitizePhoneNumber(n.trim()))
+        .filter(Boolean)
+
+    if (allowedNumbers.length === 0) return false
+
+    const fromNumber = extractFromNumber(body)
+    const sanitizedFrom = fromNumber ? sanitizePhoneNumber(fromNumber) : null
+
+    return !!sanitizedFrom && !allowedNumbers.includes(sanitizedFrom)
 }

@@ -1,10 +1,19 @@
 import type {
     IExecuteFunctions,
+    INodeExecutionData,
     IDataObject,
     IHttpRequestMethods,
     IHttpRequestOptions,
 } from 'n8n-workflow'
+import { NodeOperationError } from 'n8n-workflow'
 import { config } from '../../config'
+
+const CREDENTIAL_NAME = 'hyperflowWhatsAppAccount'
+
+const PHONE_SANITIZE_REGEX = /[\s\-()+]/g
+const PHONE_VALID_REGEX = /^\d{8,15}$/
+
+// ─── Error Handling ──────────────────────────────────────────
 
 interface HttpError extends Error {
     response?: { status?: number; data?: unknown }
@@ -24,26 +33,66 @@ export function toEnrichedErrorMessage(error: unknown): string {
     return base
 }
 
+// ─── API ─────────────────────────────────────────────────────
+
 export async function hyperflowApiRequest(
     this: IExecuteFunctions,
     method: IHttpRequestMethods,
     endpoint: string,
     body: IDataObject = {},
 ): Promise<IDataObject> {
-    const url = `${config.apiUrl}${endpoint}`
     const options: IHttpRequestOptions = {
         method,
-        url,
+        url: `${config.apiUrl}${endpoint}`,
         body,
         json: true,
     }
 
     return (await this.helpers.httpRequestWithAuthentication.call(
         this,
-        'hyperflowWhatsAppAccount',
+        CREDENTIAL_NAME,
         options,
     )) as IDataObject
 }
+
+// ─── Execution Helpers ───────────────────────────────────────
+
+export function resolveRecipient(
+    ctx: IExecuteFunctions,
+    itemIndex: number,
+): string {
+    const rawTo = ctx.getNodeParameter('to', itemIndex) as string
+    const to = sanitizePhoneNumber(rawTo)
+
+    if (!isValidPhoneNumber(to)) {
+        throw new NodeOperationError(
+            ctx.getNode(),
+            `Invalid phone number: "${rawTo}". Use format with country code (e.g., 5511999999999)`,
+            { itemIndex },
+        )
+    }
+
+    return to
+}
+
+export function handleOperationError(
+    ctx: IExecuteFunctions,
+    error: unknown,
+    itemIndex: number,
+    returnData: INodeExecutionData[],
+): void {
+    const errorMessage = toEnrichedErrorMessage(error)
+    if (ctx.continueOnFail()) {
+        returnData.push({
+            json: { error: errorMessage },
+            pairedItem: { item: itemIndex },
+        })
+        return
+    }
+    throw new NodeOperationError(ctx.getNode(), errorMessage, { itemIndex })
+}
+
+// ─── Parsing & Validation ────────────────────────────────────
 
 export function safeJsonParse<T>(value: string | T, fallback: T): T {
     if (typeof value !== 'string') return value
@@ -54,20 +103,21 @@ export function safeJsonParse<T>(value: string | T, fallback: T): T {
     }
 }
 
-const PHONE_CLEAN_REGEX = /[\s\-()"]/g
-const PHONE_PLUS_REGEX = /\+/g
-const PHONE_VALID_REGEX = /^\d{8,15}$/
-
 export function isValidPhoneNumber(phone: string): boolean {
     if (!phone || typeof phone !== 'string') return false
-    const cleaned = phone.replace(PHONE_CLEAN_REGEX, '').replace(PHONE_PLUS_REGEX, '')
-    return PHONE_VALID_REGEX.test(cleaned)
+    return PHONE_VALID_REGEX.test(phone.replace(PHONE_SANITIZE_REGEX, ''))
 }
 
 export function sanitizePhoneNumber(phone: string): string {
     if (!phone || typeof phone !== 'string') return ''
-    return phone.replace(/[\s\-()]/g, '').replace(PHONE_PLUS_REGEX, '')
+    return phone.replace(PHONE_SANITIZE_REGEX, '')
 }
+
+export function isNonEmptyString(value: unknown): value is string {
+    return typeof value === 'string' && value.trim().length > 0
+}
+
+// ─── Payload Builders ────────────────────────────────────────
 
 export function buildButton(btn: IDataObject): IDataObject {
     const button: IDataObject = {
@@ -89,6 +139,14 @@ export function buildButton(btn: IDataObject): IDataObject {
     return button
 }
 
-export function isNonEmptyString(value: unknown): value is string {
-    return typeof value === 'string' && value.trim().length > 0
+export function extractButtonsPayload(
+    ctx: IExecuteFunctions,
+    itemIndex: number,
+): IDataObject[] | undefined {
+    const includeButtons = ctx.getNodeParameter('includeButtons', itemIndex, false) as boolean
+    if (!includeButtons) return undefined
+
+    const buttonsData = ctx.getNodeParameter('buttons', itemIndex, {}) as IDataObject
+    const buttonValues = (buttonsData?.buttonValues as IDataObject[]) ?? []
+    return buttonValues.length > 0 ? buttonValues.map(buildButton) : undefined
 }

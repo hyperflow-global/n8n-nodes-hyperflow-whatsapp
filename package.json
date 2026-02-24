@@ -11,14 +11,14 @@
     "messaging"
   ],
   "license": "MIT",
-  "homepage": "https://github.com/hyperflow-global/n8n-nodes-hyperflow",
+  "homepage": "https://github.com/hyperflow-global/n8n-nodes-hyperflow-whatsapp",
   "author": {
     "name": "Hyperflow",
     "email": "faleconosco@hyperflow.global"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/hyperflow-global/n8n-nodes-hyperflow.git"
+    "url": "https://github.com/hyperflow-global/n8n-nodes-hyperflow-whatsapp.git"
   },
   "main": "dist/index.js",
   "scripts": {
