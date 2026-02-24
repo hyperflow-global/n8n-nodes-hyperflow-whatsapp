@@ -1,6 +1,6 @@
 {
   "name": "@hyperflow-global/n8n-nodes-hyperflow-whatsapp",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "n8n community node for Hyperflow WhatsApp API integration",
   "keywords": [
     "n8n-community-node-package",
