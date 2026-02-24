@@ -229,8 +229,8 @@ With authentication via `api-key` header.
 
 ## Support
 
-- **Documentation**: https://help.hyperflow.global/
-- **Email**: suporte@hyperflow.global
+- **Documentation**: https://help.hyperflow.global/docs/whatsapp-api-hyperflow/whatsapp-api-hyperflow
+- **Email**: faleconosco@hyperflow.global
 
 ## License
 
