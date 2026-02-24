@@ -10,7 +10,7 @@ export class HyperflowWhatsAppAccount implements ICredentialType {
     name = 'hyperflowWhatsAppAccount'
     displayName = 'Conta Hyperflow WhatsApp'
     documentationUrl = 'https://help.hyperflow.global/'
-    icon = 'file:hyperflow.svg' as const
+    icon: ICredentialType['icon'] = 'file:hyperflow.svg'
 
     properties: INodeProperties[] = [
         {
