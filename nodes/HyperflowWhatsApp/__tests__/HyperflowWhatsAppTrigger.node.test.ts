@@ -192,7 +192,7 @@ describe('HyperflowWhatsAppTrigger Node', () => {
 
             expect(result.webhookResponse).toEqual({
                 status: 'ok',
-                message: 'Tipo de evento não inscrito',
+                message: 'Event type not subscribed',
             })
             expect(result.workflowData).toBeUndefined()
         })
@@ -213,7 +213,7 @@ describe('HyperflowWhatsAppTrigger Node', () => {
 
             expect(result.webhookResponse).toEqual({
                 status: 'ok',
-                message: 'Número não está na lista de filtros',
+                message: 'Number is not in the filter list',
             })
             expect(result.workflowData).toBeUndefined()
         })
