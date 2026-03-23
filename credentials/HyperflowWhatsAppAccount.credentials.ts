@@ -8,20 +8,20 @@ import { config } from '../config'
 
 export class HyperflowWhatsAppAccount implements ICredentialType {
     name = 'HyperflowWhatsAppAccount'
-    displayName = 'Conta Hyperflow WhatsApp'
+    displayName = 'Hyperflow WhatsApp Account'
     documentationUrl = 'https://help.hyperflow.global/'
     icon: ICredentialType['icon'] = 'file:hyperflow.svg'
 
     properties: INodeProperties[] = [
         {
-            displayName: 'Chave de API',
+            displayName: 'API Key',
             name: 'apiKey',
             type: 'string',
             typeOptions: {
                 password: true,
             },
             default: '',
-            description: 'Chave de API para autenticação',
+            description: 'API Key for authentication',
             required: true,
         },
     ]

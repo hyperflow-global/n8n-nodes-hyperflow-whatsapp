@@ -21,7 +21,7 @@ export class HyperflowWhatsAppTrigger implements INodeType {
         version: 1,
         subtitle: '={{$parameter["events"].join(", ")}}',
         description:
-            'Inicia o fluxo quando eventos do WhatsApp ocorrem. A resposta HTTP (200 OK) é enviada automaticamente ao receber o webhook — não use o nó "Respond to Webhook" neste workflow.',
+            'Start the flow when WhatsApp events occur. The HTTP response (200 OK) is automatically sent when the webhook is received - do not use the "Respond to Webhook" node in this workflow.',
         defaults: {
             name: 'Hyperflow WhatsApp Trigger',
         },
@@ -43,61 +43,61 @@ export class HyperflowWhatsAppTrigger implements INodeType {
         ],
         properties: [
             {
-                displayName: 'Eventos',
+                displayName: 'Events',
                 name: 'events',
                 type: 'multiOptions',
                 options: [
                     {
-                        name: 'Mensagem Recebida',
+                        name: 'Message Received',
                         value: 'message',
-                        description: 'Acionado quando uma mensagem é recebida',
+                        description: 'Triggered when a message is received',
                     },
                     {
-                        name: 'Atualização de Status da Mensagem',
+                        name: 'Message Status Update',
                         value: 'status',
-                        description: 'Acionado quando o status da mensagem muda (enviada, entregue, lida)',
+                        description: 'Triggered when the message status changes (sent, delivered, read)',
                     },
                     {
-                        name: 'Clique em Botão',
+                        name: 'Button Click',
                         value: 'button',
-                        description: 'Acionado quando um botão é clicado',
+                        description: 'Triggered when a button is clicked',
                     },
                     {
-                        name: 'Seleção de Lista',
+                        name: 'List Selection',
                         value: 'list',
-                        description: 'Acionado quando um item da lista é selecionado',
+                        description: 'Triggered when an item of the list is selected',
                     },
                     {
-                        name: 'Resposta de Fluxo',
+                        name: 'Flow Response',
                         value: 'flow',
-                        description: 'Acionado quando uma resposta de fluxo é recebida',
+                        description: 'Triggered when a flow response is received',
                     },
                 ],
                 default: ['message'],
                 required: true,
-                description: 'Quais eventos escutar',
+                description: 'Which events to listen to',
             },
             {
-                displayName: 'Opções',
+                displayName: 'Options',
                 name: 'options',
                 type: 'collection',
-                placeholder: 'Adicionar Opção',
+                placeholder: 'Add Option',
                 default: {},
                 options: [
                     {
-                        displayName: 'Ignorar Atualizações de Status de Mensagens Próprias',
+                        displayName: 'Ignore Own Message Status Updates',
                         name: 'ignoreOwnStatus',
                         type: 'boolean',
                         default: true,
-                        description: 'Se deve ignorar atualizações de status para mensagens enviadas por este número',
+                        description: 'Whether to ignore status updates for messages sent by this number',
                     },
                     {
-                        displayName: 'Apenas de Números Específicos',
+                        displayName: 'Only Specific Numbers',
                         name: 'filterNumbers',
                         type: 'string',
                         default: '',
                         placeholder: '5511999999999, 5511888888888',
-                        description: 'Lista separada por vírgula de números de telefone para filtrar (deixe vazio para todos)',
+                        description: 'List of phone numbers separated by comma to filter (leave empty for all)',
                     },
                 ],
             },
@@ -117,13 +117,13 @@ export class HyperflowWhatsAppTrigger implements INodeType {
 
         if (!events.includes(eventType)) {
             return {
-                webhookResponse: { status: 'ok', message: 'Tipo de evento não inscrito' },
+                webhookResponse: { status: 'ok', message: 'Event type not subscribed' },
             }
         }
 
         if (isFilteredOut(body, options)) {
             return {
-                webhookResponse: { status: 'ok', message: 'Número não está na lista de filtros' },
+                webhookResponse: { status: 'ok', message: 'Number is not in the filter list' },
             }
         }
 

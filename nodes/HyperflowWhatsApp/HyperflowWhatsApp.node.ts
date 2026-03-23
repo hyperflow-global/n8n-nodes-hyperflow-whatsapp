@@ -15,14 +15,14 @@ export class HyperflowWhatsApp implements INodeType {
 		group: ['output'],
 		version: 1,
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
-		description: 'Enviar mensagens do WhatsApp via API Hyperflow',
+		description: 'Send WhatsApp messages through Hyperflow API',
 		defaults: { name: 'Hyperflow WhatsApp' },
 		inputs: ['main'],
 		outputs: ['main'],
 		credentials: [{ name: 'HyperflowWhatsAppAccount', required: true }],
 		properties: [
 			{
-				displayName: 'Recurso',
+				displayName: 'Resource',
 				name: 'resource',
 				type: 'options',
 				noDataExpression: true,
