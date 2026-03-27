@@ -26,7 +26,7 @@ export class HyperflowWhatsApp implements INodeType {
 				name: 'resource',
 				type: 'options',
 				noDataExpression: true,
-				options: [{ name: 'Mensagem', value: 'message' }],
+				options: [{ name: 'Message', value: 'message' }],
 				default: 'message',
 			},
 			...message.descriptions,

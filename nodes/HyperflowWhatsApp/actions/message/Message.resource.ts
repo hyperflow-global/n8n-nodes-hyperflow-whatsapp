@@ -1,35 +1,35 @@
 import type { INodeProperties } from 'n8n-workflow'
 
 export const messageOperations: INodeProperties = {
-	displayName: 'Operação',
+	displayName: 'Operation',
 	name: 'operation',
 	type: 'options',
 	noDataExpression: true,
 	displayOptions: { show: { resource: ['message'] } },
 	options: [
 		{
-			name: 'Enviar',
+			name: 'Send',
 			value: 'send',
-			description: 'Enviar uma mensagem (texto, imagem, vídeo, áudio, arquivo, localização, contato, lista, fluxos, etc.)',
-			action: 'Enviar uma mensagem',
+			description: 'Send a message (text, image, video, audio, file, location, contact, list, flows, etc.)',
+			action: 'Send a message',
 		},
 		{
-			name: 'Enviar Template',
+			name: 'Send Template',
 			value: 'sendTemplate',
-			description: 'Enviar uma mensagem de template HSM pré-aprovado',
-			action: 'Enviar uma mensagem de template',
+			description: 'Send a pre-approved HSM template message',
+			action: 'Send a template message',
 		},
 	],
 	default: 'send',
 }
 
 export const phoneNumberField: INodeProperties = {
-	displayName: 'Número de Telefone do Destinatário',
+	displayName: 'Recipient Phone Number',
 	name: 'to',
 	type: 'string',
 	required: true,
 	default: '',
 	placeholder: '5511999999999',
-	description: 'Número de telefone com código de país (ex: 5511999999999)',
+	description: 'Phone number with country code (e.g., 5511999999999)',
 	displayOptions: { show: { resource: ['message'] } },
 }

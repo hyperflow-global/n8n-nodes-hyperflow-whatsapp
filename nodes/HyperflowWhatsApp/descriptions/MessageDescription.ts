@@ -1,7 +1,7 @@
 import type { INodeProperties } from 'n8n-workflow'
 
 export const messageTypeField: INodeProperties = {
-	displayName: 'Tipo de Mensagem',
+	displayName: 'Message Type',
 	name: 'messageType',
 	type: 'options',
 	noDataExpression: true,
@@ -13,69 +13,69 @@ export const messageTypeField: INodeProperties = {
 	},
 	options: [
 		{
-			name: 'Texto',
+			name: 'Text',
 			value: 'text',
-			description: 'Enviar uma mensagem de texto simples. Suporta até 4096 caracteres, com opção de rodapé e até 3 botões interativos.',
+			description: 'Send a simple text message. Supports up to 4096 characters, with an optional footer and up to 3 interactive buttons.',
 		},
 		{
-			name: 'Imagem',
+			name: 'Image',
 			value: 'image',
-			description: 'Enviar uma imagem com legenda opcional. Formatos aceitos: JPEG, PNG. Tamanho máximo: 5 MB. A URL deve ser pública e acessível.',
+			description: 'Send an image with an optional caption. Supported formats: JPEG, PNG. Maximum size: 5 MB. The URL must be public and accessible.',
 		},
 		{
-			name: 'Vídeo',
+			name: 'Video',
 			value: 'video',
-			description: 'Enviar um vídeo com legenda opcional. Formatos aceitos: MP4, 3GPP. Tamanho máximo: 16 MB. Codec de vídeo: H.264, codec de áudio: AAC.',
+			description: 'Send a video with an optional caption. Supported formats: MP4, 3GPP. Maximum size: 16 MB. Video codec: H.264, audio codec: AAC.',
 		},
 		{
-			name: 'Áudio',
+			name: 'Audio',
 			value: 'audio',
-			description: 'Enviar um arquivo de áudio. Formatos aceitos: MP3, OGG (com codec Opus), AMR. Tamanho máximo: 16 MB.',
+			description: 'Send an audio file. Supported formats: MP3, OGG (with Opus codec), AMR. Maximum size: 16 MB.',
 		},
 		{
-			name: 'Arquivo',
+			name: 'File',
 			value: 'file',
-			description: 'Enviar um documento/arquivo. Formatos aceitos: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT, entre outros. Tamanho máximo: 100 MB.',
+			description: 'Send a document/file. Supported formats: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX, TXT, etc. Maximum size: 100 MB.',
 		},
 		{
-			name: 'Figurinha',
+			name: 'Sticker',
 			value: 'sticker',
-			description: 'Enviar uma figurinha/sticker. A imagem deve estar no formato WebP com tamanho exato de 512x512 pixels. Tamanho máximo: 100 KB para stickers estáticos, 500 KB para animados.',
+			description: 'Send a sticker/figure. The image must be in WebP format with exactly 512x512 pixels. Maximum size: 100 KB for static stickers, 500 KB for animated stickers.',
 		},
 		{
-			name: 'Localização',
+			name: 'Location',
 			value: 'location',
-			description: 'Enviar uma localização no mapa. Requer latitude e longitude em formato decimal (ex: -23.5505, -46.6333).',
+			description: 'Send a location on the map. Requires latitude and longitude in decimal format (e.g., -23.5505, -46.6333).',
 		},
 		{
-			name: 'Contato',
+			name: 'Contact',
 			value: 'contact',
-			description: 'Enviar um cartão de contato (vCard). Inclui nome, telefone com código de país e e-mail opcional.',
+			description: 'Send a contact card (vCard). Includes name, phone with country code and optional email.',
 		},
 		{
-			name: 'Lista',
+			name: 'List',
 			value: 'list',
-			description: 'Enviar uma lista interativa com seções e opções selecionáveis. Máximo de 10 seções, cada seção com até 10 itens. O texto do corpo é obrigatório.',
+			description: 'Send an interactive list with selectable sections and options. Maximum of 10 sections, each section with up to 10 items. The body text is required.',
 		},
 		{
-			name: 'Fluxos',
+			name: 'Flows',
 			value: 'flows',
-			description: 'Enviar um WhatsApp Flow interativo. Requer o ID ou nome do fluxo cadastrado na plataforma. Suporta passagem de dados iniciais e modo rascunho.',
+			description: 'Send an interactive WhatsApp Flow. Requires the registered flow ID or name on the platform. Supports passing initial data and draft mode.',
 		},
 		{
-			name: 'Cartão Genérico',
+			name: 'Generic Card',
 			value: 'generic',
-			description: 'Enviar um cartão com imagem, título, subtítulo e até 3 botões interativos. Ideal para exibir informações visuais com ações.',
+			description: 'Send a generic card with image, title, subtitle and up to 3 interactive buttons. Ideal for displaying visual information with actions.',
 		},
 		{
-			name: 'Produto',
+			name: 'Product',
 			value: 'product',
-			description: 'Enviar um único produto do catálogo do Facebook/Meta. Requer o ID do catálogo e o SKU (retailer ID) do produto.',
+			description: 'Send a single product from the Facebook/Meta catalog. Requires the catalog ID and the SKU (retailer ID) of the product.',
 		},
 		{
-			name: 'Lista de Produtos',
+			name: 'Product List',
 			value: 'productList',
-			description: 'Enviar uma lista de produtos organizados por seções do catálogo do Facebook/Meta. Permite exibir múltiplos produtos agrupados por categorias.',
+			description: 'Send a list of products organized by sections of the Facebook/Meta catalog. Allows displaying multiple products grouped by categories.',
 		},
 	],
 	default: 'text',
@@ -83,7 +83,7 @@ export const messageTypeField: INodeProperties = {
 
 export const textMessageFields: INodeProperties[] = [
 	{
-		displayName: 'Texto',
+		displayName: 'Text',
 		name: 'text',
 		type: 'string',
 		typeOptions: {
@@ -98,10 +98,10 @@ export const textMessageFields: INodeProperties[] = [
 				messageType: ['text'],
 			},
 		},
-		description: 'Conteúdo de texto da mensagem. Máximo de 4096 caracteres. Suporta formatação WhatsApp: *negrito*, _itálico_, ~tachado~, ```monoespacado```.',
+		description: 'Content of the text message. Maximum of 4096 characters. Supports WhatsApp formatting: *bold*, _italic_, ~strikethrough~, ```monospace```.',
 	},
 	{
-		displayName: 'Rodapé',
+		displayName: 'Footer',
 		name: 'footer',
 		type: 'string',
 		default: '',
@@ -113,10 +113,10 @@ export const textMessageFields: INodeProperties[] = [
 				includeButtons: [true],
 			},
 		},
-		description: 'Texto exibido no rodapé da mensagem, abaixo dos botões. Máximo de 60 caracteres.',
+		description: 'Text displayed in the footer of the message, below the buttons. Maximum of 60 characters.',
 	},
 	{
-		displayName: 'Rodapé',
+		displayName: 'Footer',
 		name: 'footer',
 		type: 'string',
 		default: '',
@@ -127,10 +127,10 @@ export const textMessageFields: INodeProperties[] = [
 				messageType: ['list'],
 			},
 		},
-		description: 'Texto exibido no rodapé da mensagem de lista. Máximo de 60 caracteres.',
+		description: 'Text displayed in the footer of the list message. Maximum of 60 characters.',
 	},
 	{
-		displayName: 'Incluir Botões',
+		displayName: 'Include Buttons',
 		name: 'includeButtons',
 		type: 'boolean',
 		default: false,
@@ -141,12 +141,12 @@ export const textMessageFields: INodeProperties[] = [
 				messageType: ['text', 'generic'],
 			},
 		},
-		description: 'Ativar para adicionar até 3 botões interativos à mensagem. Tipos disponíveis: Postback, URL e Chamada de Voz.',
+		description: 'Enable to add up to 3 interactive buttons to the message. Available types: Postback, URL and Voice Call.',
 	},
 	{
-		displayName: 'Botões',
+		displayName: 'Buttons',
 		name: 'buttons',
-		placeholder: 'Adicionar Botão',
+		placeholder: 'Add Button',
 		type: 'fixedCollection',
 		typeOptions: {
 			multipleValues: true,
@@ -164,32 +164,32 @@ export const textMessageFields: INodeProperties[] = [
 		options: [
 			{
 				name: 'buttonValues',
-				displayName: 'Botão',
+				displayName: 'Button',
 				values: [
 					{
-						displayName: 'Tipo',
+						displayName: 'Type',
 						name: 'type',
 						type: 'options',
 						options: [
 							{ name: 'Postback', value: 'postback' },
 							{ name: 'URL', value: 'url' },
-							{ name: 'Chamada de Voz', value: 'voice_call' },
+							{ name: 'Voice Call', value: 'voice_call' },
 						],
 						default: 'postback',
 					},
 				{
-					displayName: 'ID do Botão',
+					displayName: 'Button ID',
 					name: 'id',
 					type: 'string',
 					default: '',
-					description: 'Identificador único do botão (usado no retorno do postback). Máximo de 256 caracteres.',
+					description: 'Unique identifier of the button (used in the postback return). Maximum of 256 characters.',
 				},
 				{
-					displayName: 'Rótulo',
+					displayName: 'Label',
 					name: 'label',
 					type: 'string',
 					default: '',
-					description: 'Texto exibido no botão para o usuário. Máximo de 20 caracteres.',
+					description: 'Text displayed on the button for the user. Maximum of 20 characters.',
 				},
 				{
 					displayName: 'URL',
@@ -201,10 +201,10 @@ export const textMessageFields: INodeProperties[] = [
 							type: ['url'],
 						},
 					},
-					description: 'URL que será aberta no navegador quando o usuário clicar no botão. Deve iniciar com https://.',
+					description: 'URL that will be opened in the browser when the user clicks on the button. Must start with https://.',
 				},
 				{
-					displayName: 'Dados do Postback (JSON)',
+					displayName: 'Postback Data (JSON)',
 					name: 'data',
 					type: 'json',
 					default: '{}',
@@ -213,10 +213,10 @@ export const textMessageFields: INodeProperties[] = [
 							type: ['postback'],
 						},
 					},
-					description: 'Dados JSON enviados de volta ao webhook quando o usuário clicar no botão. Útil para identificar a ação escolhida.',
+					description: 'JSON data sent back to the webhook when the user clicks on the button. Useful to identify the chosen action.',
 				},
 				{
-					displayName: 'TTL em Minutos',
+					displayName: 'TTL in Minutes',
 					name: 'ttlMinutes',
 					type: 'number',
 					default: 60,
@@ -225,7 +225,7 @@ export const textMessageFields: INodeProperties[] = [
 							type: ['voice_call'],
 						},
 					},
-					description: 'Tempo de expiração em minutos para o botão de chamada de voz. Após esse tempo o botão ficará indisponível.',
+					description: 'Expiration time in minutes for the voice call button. After this time the button will be unavailable.',
 				},
 				],
 			},
@@ -235,7 +235,7 @@ export const textMessageFields: INodeProperties[] = [
 
 export const mediaMessageFields: INodeProperties[] = [
 	{
-		displayName: 'URL da Mídia',
+		displayName: 'Media URL',
 		name: 'mediaUrl',
 		type: 'string',
 		required: true,
@@ -247,10 +247,10 @@ export const mediaMessageFields: INodeProperties[] = [
 				messageType: ['image', 'video', 'audio', 'file', 'sticker'],
 			},
 		},
-		description: 'URL pública e acessível do arquivo de mídia. Limites por tipo: Imagem (JPEG/PNG, máx 5 MB), Vídeo (MP4/3GPP, máx 16 MB), Áudio (MP3/OGG/AMR, máx 16 MB), Arquivo (máx 100 MB), Figurinha (WebP 512x512, máx 100 KB estático / 500 KB animado).',
+		description: 'Public and accessible URL of the media file. Limits by type: Image (JPEG/PNG, max 5 MB), Video (MP4/3GPP, max 16 MB), Audio (MP3/OGG/AMR, max 16 MB), File (max 100 KB), Sticker (WebP 512x512, max 100 KB static / 500 KB animated).',
 	},
 	{
-		displayName: 'Legenda',
+		displayName: 'Caption',
 		name: 'caption',
 		type: 'string',
 		default: '',
@@ -261,10 +261,10 @@ export const mediaMessageFields: INodeProperties[] = [
 				messageType: ['image', 'video', 'file'],
 			},
 		},
-		description: 'Texto exibido junto à mídia. Máximo de 1024 caracteres. Suporta formatação WhatsApp (*negrito*, _itálico_, ~tachado~). Não disponível para áudio e figurinha.',
+		description: 'Text displayed alongside the media. Maximum of 1024 characters. Supports WhatsApp formatting (*bold*, _italic_, ~strikethrough~). Not available for audio and sticker.',
 	},
 	{
-		displayName: 'Nome do Arquivo',
+		displayName: 'File Name',
 		name: 'fileName',
 		type: 'string',
 		default: '',
@@ -275,7 +275,7 @@ export const mediaMessageFields: INodeProperties[] = [
 				messageType: ['file'],
 			},
 		},
-		description: 'Nome do arquivo com extensão que será exibido ao destinatário (ex: relatorio.pdf, planilha.xlsx). Se não informado, será usado o nome do arquivo da URL.',
+		description: 'Name of the file with extension that will be displayed to the recipient (e.g., report.pdf, spreadsheet.xlsx). If not provided, the name of the file from the URL will be used.',
 	},
 ]
 
@@ -294,7 +294,7 @@ export const locationFields: INodeProperties[] = [
 				messageType: ['location'],
 			},
 		},
-		description: 'Coordenada de latitude em formato decimal (ex: -23.5505 para São Paulo). Valores entre -90 e 90.',
+		description: 'Latitude coordinate in decimal format (e.g., -23.5505 for São Paulo). Values between -90 and 90.',
 	},
 	{
 		displayName: 'Longitude',
@@ -310,14 +310,14 @@ export const locationFields: INodeProperties[] = [
 				messageType: ['location'],
 			},
 		},
-		description: 'Coordenada de longitude em formato decimal (ex: -46.6333 para São Paulo). Valores entre -180 e 180.',
+		description: 'Longitude coordinate in decimal format (e.g., -46.6333 for São Paulo). Values between -180 and 180.',
 	},
 	{
-		displayName: 'Nome da Localização',
+		displayName: 'Location Name',
 		name: 'locationName',
 		type: 'string',
 		default: '',
-		placeholder: 'Escritório Hyperflow',
+		placeholder: 'Hyperflow Office',
 		displayOptions: {
 			show: {
 				resource: ['message'],
@@ -325,14 +325,14 @@ export const locationFields: INodeProperties[] = [
 				messageType: ['location'],
 			},
 		},
-		description: 'Nome do local exibido no mapa (ex: nome do estabelecimento ou ponto de referência)',
+		description: 'Name of the location displayed on the map (e.g., name of the establishment or reference point)',
 	},
 	{
-		displayName: 'Endereço',
+		displayName: 'Address',
 		name: 'address',
 		type: 'string',
 		default: '',
-		placeholder: 'Av. Paulista, 1000 - São Paulo, SP',
+		placeholder: 'Paulista Avenue, 1000 - São Paulo, SP',
 		displayOptions: {
 			show: {
 				resource: ['message'],
@@ -340,18 +340,18 @@ export const locationFields: INodeProperties[] = [
 				messageType: ['location'],
 			},
 		},
-		description: 'Endereço completo da localização exibido abaixo do nome no mapa',
+		description: 'Complete address of the location displayed below the name on the map',
 	},
 ]
 
 export const contactFields: INodeProperties[] = [
 	{
-		displayName: 'Nome do Contato',
+		displayName: 'Contact Name',
 		name: 'contactName',
 		type: 'string',
 		required: true,
 		default: '',
-		placeholder: 'João da Silva',
+		placeholder: 'John Doe',
 		displayOptions: {
 			show: {
 				resource: ['message'],
@@ -359,10 +359,10 @@ export const contactFields: INodeProperties[] = [
 				messageType: ['contact'],
 			},
 		},
-		description: 'Nome completo do contato que será exibido no cartão vCard compartilhado',
+		description: 'Complete name of the contact that will be displayed on the vCard shared card',
 	},
 	{
-		displayName: 'Telefone do Contato',
+		displayName: 'Contact Phone',
 		name: 'contactPhone',
 		type: 'string',
 		required: true,
@@ -375,14 +375,14 @@ export const contactFields: INodeProperties[] = [
 				messageType: ['contact'],
 			},
 		},
-		description: 'Número de telefone do contato sem o código do país (ex: 11999999999). O código do país é definido no campo separado.',
+		description: 'Phone number of the contact without the country code (e.g., 11999999999). The country code is defined in the separate field.',
 	},
 	{
-		displayName: 'E-mail do Contato',
+		displayName: 'Contact Email',
 		name: 'contactEmail',
 		type: 'string',
 		default: '',
-		placeholder: 'joao@email.com',
+		placeholder: 'john@email.com',
 		displayOptions: {
 			show: {
 				resource: ['message'],
@@ -390,10 +390,10 @@ export const contactFields: INodeProperties[] = [
 				messageType: ['contact'],
 			},
 		},
-		description: 'Endereço de e-mail do contato (opcional). Será incluído no cartão vCard.',
+		description: 'Email address of the contact (optional). Will be included in the vCard.',
 	},
 	{
-		displayName: 'Código do País',
+		displayName: 'Country Code',
 		name: 'countryCode',
 		type: 'string',
 		default: '55',
@@ -404,13 +404,13 @@ export const contactFields: INodeProperties[] = [
 				messageType: ['contact'],
 			},
 		},
-		description: 'Código DDI do país para o número de telefone. Padrão: 55 (Brasil). Exemplos: 1 (EUA), 351 (Portugal), 54 (Argentina).',
+		description: 'Country code for the phone number. Default: 55 (Brazil). Examples: 1 (USA), 351 (Portugal), 54 (Argentina).',
 	},
 ]
 
 export const listFields: INodeProperties[] = [
 	{
-		displayName: 'Texto do Corpo da Lista',
+		displayName: 'Body Text',
 		name: 'listText',
 		type: 'string',
 		required: true,
@@ -422,14 +422,14 @@ export const listFields: INodeProperties[] = [
 				messageType: ['list'],
 			},
 		},
-		description: 'Texto principal exibido no corpo da mensagem de lista. Máximo de 1024 caracteres. Este texto aparece antes do botão de abrir a lista.',
+		description: 'Main text displayed in the body of the list message. Maximum of 1024 characters. This text appears before the button to open the list.',
 	},
 	{
-		displayName: 'Texto do Botão',
+		displayName: 'Button Text',
 		name: 'listButton',
 		type: 'string',
 		required: true,
-		default: 'Ver opções',
+		default: 'View Options',
 		displayOptions: {
 			show: {
 				resource: ['message'],
@@ -437,14 +437,14 @@ export const listFields: INodeProperties[] = [
 				messageType: ['list'],
 			},
 		},
-		description: 'Texto do botão que o usuário clica para abrir a lista de opções. Máximo de 20 caracteres.',
+		description: 'Text of the button that the user clicks to open the list of options. Maximum of 20 characters.',
 	},
 	{
-		displayName: 'Seções (JSON)',
+		displayName: 'Sections (JSON)',
 		name: 'sections',
 		type: 'json',
 		required: true,
-		default: '[\n  {\n    "title": "Seção 1",\n    "buttons": [\n      {\n        "type": "postback",\n        "id": "opt1",\n        "label": "Opção 1",\n        "data": {}\n      }\n    ]\n  }\n]',
+		default: '[\n  {\n    "title": "Section 1",\n    "buttons": [\n      {\n        "type": "postback",\n        "id": "opt1",\n        "label": "Option 1",\n        "data": {}\n      }\n    ]\n  }\n]',
 		displayOptions: {
 			show: {
 				resource: ['message'],
@@ -452,13 +452,13 @@ export const listFields: INodeProperties[] = [
 				messageType: ['list'],
 			},
 		},
-		description: 'Array JSON com as seções da lista. Máximo de 10 seções, cada uma com até 10 itens. Cada seção deve ter "title" e "buttons" (array de objetos com type, id, label e data).',
+		description: 'JSON Array with the sections of the list. Maximum of 10 sections, each with up to 10 items. Each section must have "title" and "buttons" (array of objects with type, id, label and data).',
 	},
 ]
 
 export const flowsFields: INodeProperties[] = [
 	{
-		displayName: 'Texto do Fluxo',
+		displayName: 'Flow Text',
 		name: 'flowText',
 		type: 'string',
 		required: true,
@@ -470,14 +470,14 @@ export const flowsFields: INodeProperties[] = [
 				messageType: ['flows'],
 			},
 		},
-		description: 'Texto principal exibido na mensagem antes do botão CTA do fluxo. Descreva o propósito do fluxo para orientar o usuário.',
+		description: 'Main text displayed in the message before the CTA button of the flow. Describe the purpose of the flow to guide the user.',
 	},
 	{
-		displayName: 'Texto do Botão CTA',
+		displayName: 'CTA Button Text',
 		name: 'flowCta',
 		type: 'string',
 		required: true,
-		default: 'Abrir',
+		default: 'Open',
 		displayOptions: {
 			show: {
 				resource: ['message'],
@@ -485,10 +485,10 @@ export const flowsFields: INodeProperties[] = [
 				messageType: ['flows'],
 			},
 		},
-		description: 'Texto do botão de chamada à ação que abre o fluxo. Máximo de 20 caracteres. Exemplos: "Abrir", "Iniciar", "Preencher".',
+		description: 'Text of the CTA button that opens the flow. Maximum of 20 characters. Examples: "Open", "Start", "Fill".',
 	},
 	{
-		displayName: 'ID ou Nome do Fluxo',
+		displayName: 'Flow ID or Name',
 		name: 'flowIdentifier',
 		type: 'string',
 		required: true,
@@ -500,10 +500,10 @@ export const flowsFields: INodeProperties[] = [
 				messageType: ['flows'],
 			},
 		},
-		description: 'Identificador do WhatsApp Flow. Use o ID numérico (padrão) ou o nome do fluxo (ative "Usar Nome do Fluxo"). O fluxo deve estar cadastrado e publicado na plataforma.',
+		description: 'Identifier of the WhatsApp Flow. Use the numeric ID (default) or the flow name (enable "Use Flow Name"). The flow must be registered and published on the platform.',
 	},
 	{
-		displayName: 'Usar Nome do Fluxo',
+		displayName: 'Use Flow Name',
 		name: 'useFlowName',
 		type: 'boolean',
 		default: false,
@@ -514,15 +514,15 @@ export const flowsFields: INodeProperties[] = [
 				messageType: ['flows'],
 			},
 		},
-		description: 'Ativar para identificar o fluxo pelo nome em vez do ID numérico. Útil quando o nome é mais fácil de gerenciar.',
+		description: 'Enable to identify the flow by name instead of the numeric ID. Useful when the name is easier to manage.',
 	},
 	{
-		displayName: 'Ação do Fluxo',
+		displayName: 'Flow Action',
 		name: 'flowAction',
 		type: 'options',
 		options: [
-			{ name: 'Navegar', value: 'navigate' },
-			{ name: 'Troca de Dados', value: 'data_exchange' },
+			{ name: 'Navigate', value: 'navigate' },
+			{ name: 'Data Exchange', value: 'data_exchange' },
 		],
 		default: 'navigate',
 		displayOptions: {
@@ -532,10 +532,10 @@ export const flowsFields: INodeProperties[] = [
 				messageType: ['flows'],
 			},
 		},
-		description: 'Tipo de ação do fluxo. "Navegar" abre uma tela específica do fluxo. "Troca de Dados" envia dados ao endpoint do fluxo e recebe a tela de resposta.',
+		description: 'Type of action of the flow. "Navigate" opens a specific screen of the flow. "Data Exchange" sends data to the flow endpoint and receives the response screen.',
 	},
 	{
-		displayName: 'Tela',
+		displayName: 'Screen',
 		name: 'flowScreen',
 		type: 'string',
 		default: '',
@@ -546,10 +546,10 @@ export const flowsFields: INodeProperties[] = [
 				messageType: ['flows'],
 			},
 		},
-		description: 'Nome da tela inicial do fluxo para ação "Navegar". Deve corresponder exatamente ao ID da tela definido no JSON do fluxo.',
+		description: 'Name of the initial screen of the flow for the "Navigate" action. Must correspond exactly to the ID of the screen defined in the flow JSON.',
 	},
 	{
-		displayName: 'Dados do Fluxo (JSON)',
+		displayName: 'Flow Data (JSON)',
 		name: 'flowData',
 		type: 'json',
 		default: '{}',
@@ -560,10 +560,10 @@ export const flowsFields: INodeProperties[] = [
 				messageType: ['flows'],
 			},
 		},
-		description: 'Dados JSON iniciais enviados ao fluxo. Podem ser usados para pré-preencher campos ou personalizar o comportamento do fluxo. As chaves devem corresponder aos parâmetros esperados pela tela.',
+		description: 'JSON data initially sent to the flow. Can be used to pre-fill fields or customize the flow behavior. The keys must correspond to the parameters expected by the screen.',
 	},
 	{
-		displayName: 'Modo Rascunho',
+		displayName: 'Draft Mode',
 		name: 'flowDraft',
 		type: 'boolean',
 		default: false,
@@ -574,13 +574,13 @@ export const flowsFields: INodeProperties[] = [
 				messageType: ['flows'],
 			},
 		},
-		description: 'Ativar para usar a versão rascunho (não publicada) do fluxo. Útil para testes antes de publicar. Em produção, mantenha desativado.',
+		description: 'Enable to use the draft version (not published) of the flow. Useful for testing before publishing. In production, keep disabled.',
 	},
 ]
 
 export const genericCardFields: INodeProperties[] = [
 	{
-		displayName: 'Título do Cartão',
+		displayName: 'Card Title',
 		name: 'genericTitle',
 		type: 'string',
 		default: '',
@@ -591,10 +591,10 @@ export const genericCardFields: INodeProperties[] = [
 				messageType: ['generic'],
 			},
 		},
-		description: 'Título principal do cartão exibido em destaque. Recomendado manter curto e objetivo.',
+		description: 'Main title of the card displayed in the highlight. Recommended to keep short and objective.',
 	},
 	{
-		displayName: 'Subtítulo do Cartão',
+		displayName: 'Card Subtitle',
 		name: 'genericSubtitle',
 		type: 'string',
 		default: '',
@@ -605,10 +605,10 @@ export const genericCardFields: INodeProperties[] = [
 				messageType: ['generic'],
 			},
 		},
-		description: 'Texto descritivo exibido abaixo do título do cartão. Ideal para informações complementares.',
+		description: 'Descriptive text displayed below the card title. Ideal for additional information.',
 	},
 	{
-		displayName: 'URL da Imagem do Cartão',
+		displayName: 'Card Image URL',
 		name: 'genericImage',
 		type: 'string',
 		default: '',
@@ -619,13 +619,13 @@ export const genericCardFields: INodeProperties[] = [
 				messageType: ['generic'],
 			},
 		},
-		description: 'URL pública da imagem exibida no topo do cartão. Formatos aceitos: JPEG, PNG. Recomendado aspecto 1.91:1 (ex: 800x418 pixels).',
+		description: 'Public and accessible URL of the image displayed at the top of the card. Accepted formats: JPEG, PNG. Recommended aspect ratio 1.91:1 (e.g., 800x418 pixels).',
 	},
 ]
 
 export const productFields: INodeProperties[] = [
 	{
-		displayName: 'Texto do Produto',
+		displayName: 'Product Text',
 		name: 'productText',
 		type: 'string',
 		default: '',
@@ -636,10 +636,10 @@ export const productFields: INodeProperties[] = [
 				messageType: ['product'],
 			},
 		},
-		description: 'Texto opcional exibido no corpo da mensagem junto ao produto. Pode conter descrição, promoção ou instruções adicionais.',
+		description: 'Optional text displayed in the body of the message along with the product. Can contain description, promotion or additional instructions.',
 	},
 	{
-		displayName: 'ID do Catálogo',
+		displayName: 'Catalog ID',
 		name: 'catalogId',
 		type: 'string',
 		required: true,
@@ -651,10 +651,10 @@ export const productFields: INodeProperties[] = [
 				messageType: ['product', 'productList'],
 			},
 		},
-		description: 'ID do catálogo do Facebook/Meta Commerce. Encontre o ID no Gerenciador de Comércio do Meta Business Suite (ex: 123456789012345).',
+		description: 'Facebook/Meta Commerce catalog ID. Find the ID in the Meta Business Suite Commerce Manager (e.g., 123456789012345).',
 	},
 	{
-		displayName: 'ID do Varejista do Produto',
+		displayName: 'Product Retailer ID',
 		name: 'productRetailerId',
 		type: 'string',
 		required: true,
@@ -666,13 +666,13 @@ export const productFields: INodeProperties[] = [
 				messageType: ['product'],
 			},
 		},
-		description: 'SKU ou ID do varejista (retailer ID) do produto no catálogo. Este é o identificador único do produto definido no Gerenciador de Comércio.',
+		description: 'Retailer ID (product ID) of the product in the catalog. This is the unique identifier of the product defined in the Commerce Manager.',
 	},
 ]
 
 export const productListFields: INodeProperties[] = [
 	{
-		displayName: 'Texto da Lista de Produtos',
+		displayName: 'Product List Text',
 		name: 'productListText',
 		type: 'string',
 		default: '',
@@ -683,10 +683,10 @@ export const productListFields: INodeProperties[] = [
 				messageType: ['productList'],
 			},
 		},
-		description: 'Texto opcional exibido no corpo da mensagem de lista de produtos. Pode conter uma introdução ou instruções para o usuário.',
+		description: 'Optional text displayed in the body of the product list message. Can contain an introduction or instructions for the user.',
 	},
 	{
-		displayName: 'Cabeçalho da Lista de Produtos',
+		displayName: 'Product List Header',
 		name: 'productListHeader',
 		type: 'string',
 		default: '',
@@ -697,14 +697,14 @@ export const productListFields: INodeProperties[] = [
 				messageType: ['productList'],
 			},
 		},
-		description: 'Texto do cabeçalho exibido no topo da lista de produtos. Máximo de 60 caracteres.',
+		description: 'Text of the header displayed at the top of the product list. Maximum of 60 characters.',
 	},
 	{
-		displayName: 'Seções de Produtos (JSON)',
+		displayName: 'Product Sections (JSON)',
 		name: 'productSections',
 		type: 'json',
 		required: true,
-		default: '[\n  {\n    "title": "Categoria 1",\n    "products": [\n      { "productRetailerId": "SKU123" }\n    ]\n  }\n]',
+		default: '[\n  {\n    "title": "Section 1",\n    "products": [\n      { "productRetailerId": "SKU123" }\n    ]\n  }\n]',
 		displayOptions: {
 			show: {
 				resource: ['message'],
@@ -712,42 +712,42 @@ export const productListFields: INodeProperties[] = [
 				messageType: ['productList'],
 			},
 		},
-		description: 'Array JSON com as seções de produtos. Máximo de 10 seções, com até 30 produtos no total. Cada seção deve ter "title" e "products" (array com objetos contendo "productRetailerId").',
+		description: 'JSON Array with the product sections. Maximum of 10 sections, with up to 30 products in total. Each section must have "title" and "products" (array with objects containing "productRetailerId").',
 	},
 ]
 
 export const templateFields: INodeProperties[] = [
 	{
-		displayName: 'Nome do Template',
+		displayName: 'Template Name',
 		name: 'templateName',
 		type: 'string',
 		required: true,
 		default: '',
-		placeholder: 'meu_template_aprovado',
+		placeholder: 'my_approved_template',
 		displayOptions: {
 			show: {
 				resource: ['message'],
 				operation: ['sendTemplate'],
 			},
 		},
-		description: 'Nome exato do template HSM aprovado pelo Meta/WhatsApp. O nome deve corresponder exatamente ao cadastrado no Gerenciador do WhatsApp Business. Letras minúsculas e underscores.',
+		description: 'Exact name of the approved HSM template by Meta/WhatsApp. The name must correspond exactly to the one registered in the WhatsApp Business Manager. Lowercase letters and underscores.',
 	},
 	{
-		displayName: 'Idioma do Template',
+		displayName: 'Template Language',
 		name: 'templateLanguage',
 		type: 'string',
 		required: true,
-		default: 'pt_BR',
+		default: 'en_US',
 		displayOptions: {
 			show: {
 				resource: ['message'],
 				operation: ['sendTemplate'],
 			},
 		},
-		description: 'Código de idioma do template conforme registrado no Meta. Exemplos: pt_BR (Português Brasil), en_US (Inglês EUA), es (Espanhol). Deve corresponder ao idioma aprovado.',
+		description: 'Language code of the template as registered in Meta. Examples: pt_BR (Portuguese Brazil), en_US (English USA), es (Spanish). Must correspond to the approved language.',
 	},
 	{
-		displayName: 'Parâmetros do Template (Matriz JSON)',
+		displayName: 'Template Parameters (JSON Array)',
 		name: 'templateParameters',
 		type: 'json',
 		default: '[]',
@@ -757,10 +757,10 @@ export const templateFields: INodeProperties[] = [
 				operation: ['sendTemplate'],
 			},
 		},
-		description: 'Array JSON com os valores dos parâmetros variáveis do corpo do template, na ordem em que aparecem ({{1}}, {{2}}, etc.). Ex: ["João", "Pedido #123", "R$ 99,90"].',
+		description: 'JSON Array with the values of the variable parameters of the template body, in the order they appear ({{1}}, {{2}}, etc.). Ex: ["John", "Order #123", "$99.90"].',
 	},
 	{
-		displayName: 'Parâmetro do Cabeçalho',
+		displayName: 'Header Parameter',
 		name: 'headerParameter',
 		type: 'string',
 		default: '',
@@ -770,10 +770,10 @@ export const templateFields: INodeProperties[] = [
 				operation: ['sendTemplate'],
 			},
 		},
-		description: 'Valor do parâmetro variável do cabeçalho de texto do template (se houver {{1}} no cabeçalho). Preencha apenas se o template tiver cabeçalho do tipo texto com variável.',
+		description: 'Variable parameter of the text header of the template (if there is {{1}} in the header). Fill only if the template has a text header with variable.',
 	},
 	{
-		displayName: 'URL da Imagem do Cabeçalho',
+		displayName: 'Header Image URL',
 		name: 'headerImageUrl',
 		type: 'string',
 		default: '',
@@ -783,10 +783,10 @@ export const templateFields: INodeProperties[] = [
 				operation: ['sendTemplate'],
 			},
 		},
-		description: 'URL pública da imagem para o cabeçalho do template. Preencha apenas se o template tiver cabeçalho do tipo imagem. Formatos: JPEG, PNG. Tamanho máximo: 5 MB.',
+		description: 'Public and accessible URL of the image for the template header. Fill only if the template has a header of type image. Accepted formats: JPEG, PNG. Maximum size: 5 MB.',
 	},
 	{
-		displayName: 'URL do Vídeo do Cabeçalho',
+		displayName: 'Header Video URL',
 		name: 'headerVideoUrl',
 		type: 'string',
 		default: '',
@@ -796,10 +796,10 @@ export const templateFields: INodeProperties[] = [
 				operation: ['sendTemplate'],
 			},
 		},
-		description: 'URL pública do vídeo para o cabeçalho do template. Preencha apenas se o template tiver cabeçalho do tipo vídeo. Formato: MP4. Tamanho máximo: 16 MB.',
+		description: 'Public and accessible URL of the video for the template header. Fill only if the template has a header of type video. Accepted format: MP4. Maximum size: 16 MB.',
 	},
 	{
-		displayName: 'URL do Documento do Cabeçalho',
+		displayName: 'Header Document URL',
 		name: 'headerDocumentUrl',
 		type: 'string',
 		default: '',
@@ -809,10 +809,10 @@ export const templateFields: INodeProperties[] = [
 				operation: ['sendTemplate'],
 			},
 		},
-		description: 'URL pública do documento para o cabeçalho do template. Preencha apenas se o template tiver cabeçalho do tipo documento. Formatos: PDF, DOC, DOCX, etc. Tamanho máximo: 100 MB.',
+		description: 'Public and accessible URL of the document for the template header. Fill only if the template has a header of type document. Accepted formats: PDF, DOC, DOCX, etc. Maximum size: 100 MB.',
 	},
 	{
-		displayName: 'Botões do Template (JSON)',
+		displayName: 'Template Buttons (JSON)',
 		name: 'templateButtons',
 		type: 'json',
 		default: '[]',
@@ -822,6 +822,6 @@ export const templateFields: INodeProperties[] = [
 				operation: ['sendTemplate'],
 			},
 		},
-		description: 'Array JSON com a configuração de botões dinâmicos do template. Usado para botões com parâmetros variáveis (ex: URL com sufixo dinâmico ou botão de código de verificação).',
+		description: 'JSON Array with the dynamic button configuration of the template. Used for buttons with variable parameters (e.g., URL with dynamic suffix or verification code button).',
 	},
 ]
