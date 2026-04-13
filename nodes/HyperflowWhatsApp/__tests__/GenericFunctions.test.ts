@@ -1,12 +1,67 @@
+import type { IExecuteFunctions, INode, INodeExecutionData } from 'n8n-workflow'
+import { NodeApiError, NodeOperationError } from 'n8n-workflow'
 import {
     safeJsonParse,
     isValidPhoneNumber,
     sanitizePhoneNumber,
     buildButton,
     isNonEmptyString,
+    handleOperationError,
 } from '../GenericFunctions'
 
+const mockNode = {
+    name: 'Test',
+    type: 'test',
+    typeVersion: 1,
+    position: [0, 0],
+    parameters: {},
+} as INode
+
 describe('GenericFunctions', () => {
+    describe('handleOperationError', () => {
+        it('should re-throw NodeApiError when continueOnFail is false', () => {
+            const apiError = new NodeApiError(mockNode, {
+                message: 'Bad request',
+                httpCode: '400',
+            })
+            const ctx = {
+                continueOnFail: () => false,
+                getNode: () => mockNode,
+            } as unknown as IExecuteFunctions
+            const returnData: INodeExecutionData[] = []
+            expect(() => handleOperationError(ctx, apiError, 0, returnData)).toThrow(apiError)
+            expect(returnData).toHaveLength(0)
+        })
+
+        it('should push error item when continueOnFail is true', () => {
+            const apiError = new NodeApiError(mockNode, {
+                message: 'Bad request',
+                httpCode: '400',
+            })
+            const ctx = {
+                continueOnFail: () => true,
+                getNode: () => mockNode,
+            } as unknown as IExecuteFunctions
+            const returnData: INodeExecutionData[] = []
+            handleOperationError(ctx, apiError, 2, returnData)
+            expect(returnData).toHaveLength(1)
+            const item = returnData[0]
+            expect(item).toBeDefined()
+            expect(item!.pairedItem).toEqual({ item: 2 })
+            expect(item!.json).toMatchObject({ error: expect.any(String) })
+        })
+
+        it('should wrap non-API errors in NodeOperationError when continueOnFail is false', () => {
+            const ctx = {
+                continueOnFail: () => false,
+                getNode: () => mockNode,
+            } as unknown as IExecuteFunctions
+            expect(() =>
+                handleOperationError(ctx, new Error('plain failure'), 0, []),
+            ).toThrow(NodeOperationError)
+        })
+    })
+
     describe('safeJsonParse', () => {
         it('should parse valid JSON string', () => {
             const result = safeJsonParse('{"key": "value"}', {})

@@ -5,6 +5,7 @@ import type {
     IWebhookFunctions,
     IWebhookResponseData,
 } from 'n8n-workflow'
+import { NodeConnectionTypes } from 'n8n-workflow'
 import { sanitizePhoneNumber } from './GenericFunctions'
 import {
     extractEventType,
@@ -26,7 +27,7 @@ export class HyperflowWhatsAppTrigger implements INodeType {
             name: 'Hyperflow WhatsApp Trigger',
         },
         inputs: [],
-        outputs: ['main'],
+        outputs: [NodeConnectionTypes.Main],
         credentials: [
             {
                 name: 'HyperflowWhatsAppAccount',

@@ -5,7 +5,7 @@ import type {
     IHttpRequestMethods,
     IHttpRequestOptions,
 } from 'n8n-workflow'
-import { NodeOperationError } from 'n8n-workflow'
+import { NodeApiError, NodeOperationError } from 'n8n-workflow'
 import { config } from '../../config'
 
 const CREDENTIAL_NAME = 'HyperflowWhatsAppAccount'
@@ -88,6 +88,9 @@ export function handleOperationError(
             pairedItem: { item: itemIndex },
         })
         return
+    }
+    if (error instanceof NodeApiError) {
+        throw error
     }
     throw new NodeOperationError(ctx.getNode(), errorMessage, { itemIndex })
 }

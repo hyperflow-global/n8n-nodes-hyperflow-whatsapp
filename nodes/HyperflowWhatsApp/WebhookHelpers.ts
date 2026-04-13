@@ -125,50 +125,49 @@ function extractFromCloudApiPayload(body: IDataObject): string | null {
 
 export function extractCloudApiMessage(body: IDataObject): IDataObject {
     const result: IDataObject = {}
+    if (body == null || typeof body !== 'object') {
+        return result
+    }
 
-    try {
-        const entry = (body.entry as IDataObject[] | undefined)?.[0]
-        const change = (entry?.changes as IDataObject[] | undefined)?.[0]
-        const value = change?.value as IDataObject | undefined
-        if (!value) return result
+    const entry = (body.entry as IDataObject[] | undefined)?.[0]
+    const change = (entry?.changes as IDataObject[] | undefined)?.[0]
+    const value = change?.value as IDataObject | undefined
+    if (!value) return result
 
-        if (value.messages && Array.isArray(value.messages)) {
-            const message = (value.messages as IDataObject[])[0]
-            if (message) {
-                result.messageId = message.id
-                result.messageType = message.type
+    if (value.messages && Array.isArray(value.messages)) {
+        const message = (value.messages as IDataObject[])[0]
+        if (message) {
+            result.messageId = message.id
+            result.messageType = message.type
 
-                if (message.text && typeof message.text === 'object') {
-                    result.text = (message.text as IDataObject).body
-                }
-
-                const mediaTypes = ['image', 'video', 'audio', 'document', 'sticker'] as const
-                for (const mediaType of mediaTypes) {
-                    if (message[mediaType]) {
-                        result.media = message[mediaType]
-                        break
-                    }
-                }
-
-                if (message.location) result.location = message.location
-                if (message.contacts) result.contacts = message.contacts
-                if (message.interactive) result.interactive = message.interactive
+            if (message.text && typeof message.text === 'object') {
+                result.text = (message.text as IDataObject).body
             }
-        }
 
-        if (value.contacts && Array.isArray(value.contacts)) {
-            const contact = (value.contacts as IDataObject[])[0]
-            if (contact) {
-                result.contactName = (contact.profile as IDataObject)?.name
-                result.from = contact.wa_id
+            const mediaTypes = ['image', 'video', 'audio', 'document', 'sticker'] as const
+            for (const mediaType of mediaTypes) {
+                if (message[mediaType]) {
+                    result.media = message[mediaType]
+                    break
+                }
             }
-        }
 
-        if (value.metadata) {
-            result.phoneNumberId = (value.metadata as IDataObject).phone_number_id
+            if (message.location) result.location = message.location
+            if (message.contacts) result.contacts = message.contacts
+            if (message.interactive) result.interactive = message.interactive
         }
-    } catch {
-        void 0
+    }
+
+    if (value.contacts && Array.isArray(value.contacts)) {
+        const contact = (value.contacts as IDataObject[])[0]
+        if (contact) {
+            result.contactName = (contact.profile as IDataObject)?.name
+            result.from = contact.wa_id
+        }
+    }
+
+    if (value.metadata) {
+        result.phoneNumberId = (value.metadata as IDataObject).phone_number_id
     }
 
     return result

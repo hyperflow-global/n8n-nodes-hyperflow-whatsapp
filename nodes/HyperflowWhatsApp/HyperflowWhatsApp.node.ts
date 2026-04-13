@@ -4,6 +4,7 @@ import type {
 	INodeType,
 	INodeTypeDescription,
 } from 'n8n-workflow'
+import { NodeConnectionTypes } from 'n8n-workflow'
 import { router } from './actions/router'
 import * as message from './actions/message'
 
@@ -17,8 +18,8 @@ export class HyperflowWhatsApp implements INodeType {
 		subtitle: '={{$parameter["operation"] + ": " + $parameter["resource"]}}',
 		description: 'Send WhatsApp messages through Hyperflow API',
 		defaults: { name: 'Hyperflow WhatsApp' },
-		inputs: ['main'],
-		outputs: ['main'],
+		inputs: [NodeConnectionTypes.Main],
+		outputs: [NodeConnectionTypes.Main],
 		credentials: [{ name: 'HyperflowWhatsAppAccount', required: true }],
 		properties: [
 			{
